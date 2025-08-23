@@ -1,26 +1,5 @@
-// Dados dos tripulantes (exemplo)
-const crew = [
-    {id: 'joao', name: 'João', img: '/static/img/crew01.png', access: true, role: 'Navigator'},
-    {id: 'maria', name: 'Maria', img: '/static/img/crew02.png', access: true, role: 'Medical Officer'},
-    {id: 'ana', name: 'Ana', img: '/static/img/crew03.png', access: false, role: 'Quartermaster'},
-    {id: 'bruno', name: 'Bruno', img: '/static/img/crew04.png', access: false, role: 'Security Officer'},
-    {id: 'carla', name: 'Carla', img: '/static/img/crew05.png', access: false, role: 'Lab Technician'},
-    {id: 'daniel', name: 'Daniel', img: '/static/img/crew06.png', access: false, role: 'Helmsman'},
-    {id: 'elisa', name: 'Elisa', img: '/static/img/crew07.png', access: false, role: 'Cook/Chef'},
-    {id: 'felipe', name: 'Felipe', img: '/static/img/crew08.png', access: false, role: 'Biochemist'},
-    {id: 'giovana', name: 'Giovana', img: '/static/img/crew09.png', access: false, role: 'Deck Supervisor'},
-    {id: 'heitor', name: 'Heitor', img: '/static/img/crew10.png', access: false, role: 'First Officer'},
-    {id: 'isabela', name: 'Isabela', img: '/static/img/crew11.png', access: false, role: 'Steward'},
-    {id: 'jorge', name: 'Jorge', img: '/static/img/crew12.png', access: false, role: 'Weapons Specialist'},
-    {id: 'karina', name: 'Karina', img: '/static/img/crew13.png', access: false, role: 'Hazardous Materials Officer'},
-    {id: 'lucas', name: 'Lucas', img: '/static/img/crew14.png', access: false, role: 'Mechanic'},
-    {id: 'marina', name: 'Marina', img: '/static/img/crew15.png', access: false, role: 'Chief Engineer'},
-    {id: 'nina', name: 'Nina', img: '/static/img/crew16.png', access: false, role: 'Electrician'},
-    {id: 'otavio', name: 'Otávio', img: '/static/img/crew17.png', access: false, role: 'Assistant Engineer'},
-    {id: 'paula', name: 'Paula', img: '/static/img/crew18.png', access: false, role: 'Radio Operator'},
-    {id: 'rafael', name: 'Rafael', img: '/static/img/crew19.png', access: false, role: 'Cryptographer'},
-    {id: 'sara', name: 'Sara', img: '/static/img/crew20.png', access: false, role: 'Captain'},
-];
+// Lista de tripulantes agora vem do backend
+const crew = window.crew;
 let selected = 0;
 let attempts = 0;
 const maxAttempts = 3;
@@ -28,14 +7,20 @@ let disabledCrew = Array(crew.length).fill(false);
 let timer = null;
 let timeLeft = 30;
 let timerActive = false;
+let gameStarted = false;
+
 function renderCrewList() {
     const list = document.getElementById('crew-list');
     list.innerHTML = '';
+    // Bloqueia se NÃO começou, OU tempo acabou, OU tentativas máximas OU acesso liberado
+    const block = !gameStarted || !timerActive || attempts >= maxAttempts;
     crew.forEach((c, i) => {
         const div = document.createElement('div');
         div.className = 'crew-member' + (i === selected ? ' selected' : '') + (disabledCrew[i] ? ' disabled' : '');
-        if (!disabledCrew[i]) {
+        if (!disabledCrew[i] && !block) {
             div.onclick = () => selectCrew(i);
+            div.style.cursor = 'pointer';
+            div.tabIndex = 0;
         } else {
             div.style.opacity = 0.4;
             div.style.pointerEvents = 'none';
@@ -44,11 +29,11 @@ function renderCrewList() {
         list.appendChild(div);
     });
 }
+
 function selectCrew(i) {
     selected = i;
     document.getElementById('badge-img').src = crew[i].img;
     document.getElementById('badge-name').textContent = crew[i].name;
-    document.getElementById('badge-access').textContent = crew[i].access ? 'Acesso: Liberado' : 'Acesso: Restrito';
     // Adiciona o papel do tripulante
     let roleDiv = document.getElementById('badge-role');
     if (!roleDiv) {
@@ -57,7 +42,7 @@ function selectCrew(i) {
         roleDiv.style.fontSize = '12px';
         roleDiv.style.color = '#fff';
         roleDiv.style.marginBottom = '8px';
-        document.getElementById('badge').insertBefore(roleDiv, document.getElementById('badge-access'));
+        document.getElementById('badge').insertBefore(roleDiv, document.getElementById('badge-crypto'));
     }
     roleDiv.textContent = 'Papel: ' + crew[i].role;
     renderCrewList();
@@ -65,7 +50,8 @@ function selectCrew(i) {
 // Drag and drop
 function allowDrop(ev) { ev.preventDefault(); }
 function drag(ev) {
-    if (disabledCrew[selected]) {
+    // Bloqueia drag se NÃO começou, tempo acabou, tentativas máximas ou acesso liberado
+    if (!gameStarted || !timerActive || attempts >= maxAttempts || disabledCrew[selected]) {
         ev.preventDefault();
         return false;
     }
@@ -111,6 +97,9 @@ function drop(ev) {
 function showSuccessEffect() {
     const door = document.getElementById('door');
     if (!door) return;
+    // Bloqueia tudo ao liberar acesso
+    timerActive = false;
+    renderCrewList();
     // Animação de abertura: adiciona classe 'open' para as metades se afastarem
     door.classList.add('open');
     // Remove a classe após 2.5s para permitir reset em tentativas futuras
@@ -183,10 +172,13 @@ function showRetryButton(msg) {
         >Tente novamente</button>
     `;
     showAlarmEffect();
+    renderCrewList();
     document.getElementById('retry-btn').onclick = function() {
         // Reinicia o jogo
         attempts = 0;
         disabledCrew = Array(crew.length).fill(false);
+        gameStarted = true;
+        timerActive = true;
         renderCrewList();
         selectCrew(0);
         document.getElementById('result').innerHTML = '';
@@ -242,5 +234,15 @@ document.head.appendChild(style);
 document.addEventListener('DOMContentLoaded', function() {
     renderCrewList();
     selectCrew(0);
-    startTimer();
+    // Não inicia o timer automaticamente
+    const playBtn = document.getElementById('play-btn');
+    if (playBtn) {
+        playBtn.onclick = function() {
+            playBtn.style.display = 'none';
+            gameStarted = true;
+            timerActive = true; // Libera a lista imediatamente
+            renderCrewList();
+            startTimer();
+        };
+    }
 });

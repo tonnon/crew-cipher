@@ -2,17 +2,41 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>CrewCipher - HUD Game Indie</title>
+    <title>Crew Cipher</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="hud">CrewCipher - Área Restrita</div>
-    <div class="main">
-        {% include 'partials/crew_list.html' %}
-        {% include 'partials/badge.html' %}
-        {% include 'partials/door.html' %}
-    </div>
-    <div id="result"></div>
+        <div class="hud">Crew Cipher</div>
+        <div class="main">
+                {% include 'partials/crew_list.html' %}
+                {% include 'partials/badge.html' %}
+                {% include 'partials/door.html' %}
+        </div>
+        <div id="result"></div>
+        <button id="play-btn" style="
+        position: fixed;
+        left: 50%;
+        top: 50px;
+        transform: translateX(-50%);
+        z-index: 2000;
+        padding: 16px 40px;
+        font-size: 22px;
+        font-family: 'Press Start 2P', Verdana, Arial, sans-serif;
+        background: linear-gradient(90deg, #00ff6a 60%, #009e3a 100%);
+        color: #222;
+        border: 2px solid #00ff6a;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px #0005;
+        cursor: pointer;
+        letter-spacing: 2px;
+        transition: background 0.2s, color 0.2s;
+    "
+    onmouseover="this.style.background='#009e3a';this.style.color='#fff';"
+    onmouseout="this.style.background='linear-gradient(90deg, #00ff6a 60%, #009e3a 100%)';this.style.color='#222';"
+    >▶ Jogar</button>
+    <script type="text/javascript">
+        window.crew = {{ crew|tojson|safe }};
+    </script>
     <script src="/static/main.js"></script>
 </body>
 </html>

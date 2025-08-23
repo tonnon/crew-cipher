@@ -22,10 +22,32 @@ def decrypt_message(token):
 
 @app.route("/")
 def index():
-    # Mensagem de acesso criptografada
+    # Lista de tripulantes
+    crew = [
+        {"id": "joao", "name": "João", "img": "/static/img/crew01.png", "access": True, "role": "Navegador"},
+        {"id": "maria", "name": "Maria", "img": "/static/img/crew02.png", "access": True, "role": "Médica"},
+        {"id": "ana", "name": "Ana", "img": "/static/img/crew03.png", "access": False, "role": "Intendente"},
+        {"id": "bruno", "name": "Bruno", "img": "/static/img/crew04.png", "access": False, "role": "Segurança"},
+        {"id": "carla", "name": "Carla", "img": "/static/img/crew05.png", "access": False, "role": "Técnica de Laboratório"},
+        {"id": "daniel", "name": "Daniel", "img": "/static/img/crew06.png", "access": False, "role": "Timoneiro"},
+        {"id": "elisa", "name": "Elisa", "img": "/static/img/crew07.png", "access": False, "role": "Cozinheira"},
+        {"id": "felipe", "name": "Felipe", "img": "/static/img/crew08.png", "access": False, "role": "Bioquímico"},
+        {"id": "giovana", "name": "Giovana", "img": "/static/img/crew09.png", "access": False, "role": "Supervisora de Convés"},
+        {"id": "heitor", "name": "Heitor", "img": "/static/img/crew10.png", "access": False, "role": "Imediato"},
+        {"id": "isabela", "name": "Isabela", "img": "/static/img/crew11.png", "access": False, "role": "Comissária"},
+        {"id": "jorge", "name": "Jorge", "img": "/static/img/crew12.png", "access": False, "role": "Especialista em Armas"},
+        {"id": "karina", "name": "Karina", "img": "/static/img/crew13.png", "access": False, "role": "Materiais Perigosos"},
+        {"id": "lucas", "name": "Lucas", "img": "/static/img/crew14.png", "access": False, "role": "Mecânico"},
+        {"id": "marina", "name": "Marina", "img": "/static/img/crew15.png", "access": False, "role": "Engenheira Chefe"},
+        {"id": "nina", "name": "Nina", "img": "/static/img/crew16.png", "access": False, "role": "Eletricista"},
+        {"id": "otavio", "name": "Otávio", "img": "/static/img/crew17.png", "access": False, "role": "Assistente de Engenharia"},
+        {"id": "paula", "name": "Paula", "img": "/static/img/crew18.png", "access": False, "role": "Operadora de Rádio"},
+        {"id": "rafael", "name": "Rafael", "img": "/static/img/crew19.png", "access": False, "role": "Criptógrafo"},
+        {"id": "sara", "name": "Sara", "img": "/static/img/crew20.png", "access": False, "role": "Capitã"},
+    ]
     access_message = "ACESSO LIBERADO"
     encrypted = encrypt_message(access_message)
-    return render_template("index.html", encrypted=encrypted)
+    return render_template("index.html", encrypted=encrypted, crew=crew)
 
 @app.route("/check_access", methods=["POST"])
 def check_access():
