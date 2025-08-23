@@ -1,21 +1,31 @@
 from flask import Flask, render_template, request, jsonify
-import base64
+from cryptography.fernet import Fernet
 
 app = Flask(__name__)
 
-# Simulação de tripulantes autorizados
-AUTHORIZED_CREW = {"joao", "maria"}
 
-# Função simples de "descriptografia"
-def decrypt_code(code):
+# Simulação de tripulantes autorizados
+AUTHORIZED_CREW = {"karina"}
+
+# Chave secreta para criptografia (fixa para demo, em produção use variável de ambiente)
+FERNET_KEY = Fernet.generate_key() if not hasattr(__builtins__, 'FERNET_KEY') else __builtins__.FERNET_KEY
+fernet = Fernet(FERNET_KEY)
+
+def encrypt_message(msg):
+    return fernet.encrypt(msg.encode()).decode()
+
+def decrypt_message(token):
     try:
-        return base64.b64decode(code.encode()).decode()
+        return fernet.decrypt(token.encode()).decode()
     except Exception:
         return "Código inválido"
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    # Mensagem de acesso criptografada
+    access_message = "ACESSO LIBERADO"
+    encrypted = encrypt_message(access_message)
+    return render_template("index.html", encrypted=encrypted)
 
 @app.route("/check_access", methods=["POST"])
 def check_access():
@@ -23,7 +33,7 @@ def check_access():
     crew = data.get("crew")
     code = data.get("code")
     if crew in AUTHORIZED_CREW:
-        decrypted = decrypt_code(code)
+        decrypted = decrypt_message(code)
         return jsonify({"access": True, "decrypted": decrypted})
     else:
         return jsonify({"access": False, "decrypted": "Acesso negado"})

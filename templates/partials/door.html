@@ -1,0 +1,71 @@
+<div class="door" id="door" ondrop="drop(event)" ondragover="allowDrop(event)" style="
+    width: 180px; height: 320px; background: none;
+    border: 4px solid #222; border-radius: 8px; box-shadow: 0 4px 16px #000a;
+    position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+    <div class="door-bg-corridor"></div>
+    <div class="door-half door-left" id="door-left" style="
+        position:absolute; left:0; top:0; width:50%; height:100%; background:linear-gradient(160deg, #444 0%, #222 100%); border-top-left-radius:8px; border-bottom-left-radius:8px; z-index:1; transition:transform 1s cubic-bezier(.77,0,.18,1);
+    ">
+        <!-- Janela retangular -->
+        <div style="position:absolute;left:50%;top:32px;transform:translateX(-50%);width:70px;height:22px;background:#222;border:2px solid #666;border-radius:4px;box-shadow:inset 0 0 8px #0ff4;display:flex;align-items:center;justify-content:center;z-index:2;">
+            <div style="width:60px;height:10px;background:linear-gradient(90deg,#0ff4,#222 60%);opacity:0.3;border-radius:2px;"></div>
+        </div>
+        <!-- Faixa Central Vermelha -->
+        <div class="red-stripe" style="
+            position:absolute; left:50%; top:50%;
+            transform:translate(-50%,-50%); width:4px; height:100px;
+            background:#900; z-index:2;
+        "></div>
+        <!-- Texto SECTION B4 -->
+        <div class="section-label" style="
+            position:absolute; left:50%; top:calc(50% + 40px);
+            transform:translateX(-50%); font-size:12px; font-weight:bold;
+            color:#fff; text-align:center; z-index:2;
+        ">
+            SECTION<br>B4
+        </div>
+    </div>
+    <div class="door-half door-right" id="door-right" style="
+        position:absolute; right:0; top:0; width:50%; height:100%; background:linear-gradient(160deg, #444 0%, #222 100%); border-top-right-radius:8px; border-bottom-right-radius:8px; z-index:1; transition:transform 1s cubic-bezier(.77,0,.18,1);
+    ">
+        <!-- Janela retangular -->
+        <div style="position:absolute;left:50%;top:32px;transform:translateX(-50%);width:70px;height:22px;background:#222;border:2px solid #666;border-radius:4px;box-shadow:inset 0 0 8px #0ff4;display:flex;align-items:center;justify-content:center;z-index:2;">
+            <div style="width:60px;height:10px;background:linear-gradient(90deg,#0ff4,#222 60%);opacity:0.3;border-radius:2px;"></div>
+        </div>
+        <!-- Faixa Central Vermelha -->
+        <div class="red-stripe" style="
+            position:absolute; left:50%; top:50%;
+            transform:translate(-50%,-50%); width:4px; height:100px;
+            background:#900; z-index:2;
+        "></div>
+    </div>
+    <!-- Trava Circular Central -->
+    <div class="center-lock" style="
+        position:absolute; left:50%; top:50%;
+        transform:translate(-50%,-50%); width:48px; height:48px;
+        display:flex; align-items:center; justify-content:center;
+        z-index:2;
+    ">
+        <div class="lock-circle" style="
+            width:100%; height:100%; border-radius:50%;
+            background:#bbb; position:relative;
+        ">
+            <svg width="48" height="48" viewBox="0 0 48 48" style="position:absolute; top:0; left:0;">
+                <circle cx="24" cy="24" r="20" fill="#bbb" stroke="#900" stroke-width="3"/>
+                <circle cx="24" cy="24" r="10" fill="#900" stroke="#fff" stroke-width="2"/>
+                <circle cx="24" cy="24" r="4" fill="#fff"/>
+                <g stroke="#900" stroke-width="2">
+                    <line x1="24" y1="4" x2="24" y2="12"/>
+                    <line x1="24" y1="36" x2="24" y2="44"/>
+                    <line x1="4" y1="24" x2="12" y2="24"/>
+                    <line x1="36" y1="24" x2="44" y2="24"/>
+                </g>
+            </svg>
+        </div>
+        <div class="center-stripe" style="
+            position:absolute; left:50%; top:50%;
+            transform:translate(-50%,-50%); width:4px; height:100%;
+            background:#900;
+        "></div>
+    </div>
+</div>
