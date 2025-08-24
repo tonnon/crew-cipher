@@ -45,6 +45,12 @@ function selectCrew(i) {
         document.getElementById('badge').insertBefore(roleDiv, document.getElementById('badge-crypto'));
     }
     roleDiv.textContent = 'Papel: ' + crew[i].role;
+    // Buscar token criptografado individual
+    fetch(`/get_token/${crew[i].id}`)
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById('badge-crypto').textContent = data.encrypted;
+        });
     renderCrewList();
 }
 // Drag and drop
@@ -76,18 +82,23 @@ function drop(ev) {
     .then(data => {
         attempts++;
         if(data.access) {
-            document.getElementById('result').innerHTML = '<span style="color:lime;">' + data.decrypted + '</span>';
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<span class="success-msg">' + data.decrypted + '</span>';
+            resultDiv.classList.add('highlight-success');
+            setTimeout(() => resultDiv.classList.remove('highlight-success'), 1200);
             timerActive = false;
             clearInterval(timer);
             showSuccessEffect();
         } else {
             disabledCrew[selected] = true;
             renderCrewList();
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<span class="error-msg">' + data.decrypted + ` (${attempts}/${maxAttempts} tentativas)` + '</span>';
+            resultDiv.classList.add('highlight-error');
+            setTimeout(() => resultDiv.classList.remove('highlight-error'), 900);
             if (attempts >= maxAttempts) {
                 showAlarmEffect();
                 showRetryButton('Você excedeu o número de tentativas! Vazamento detectado! Risco de explosão!');
-            } else {
-                document.getElementById('result').innerHTML = '<span style="color:red;">' + data.decrypted + ` (${attempts}/${maxAttempts} tentativas)` + '</span>';
             }
         }
     });
@@ -229,6 +240,23 @@ style.innerHTML = `
     100% { transform: scale(1) rotate(0deg); }
 }`;
 document.head.appendChild(style);
+
+// Adicione estilos para destaque visual
+const style2 = document.createElement('style');
+style2.innerHTML = `
+.success-msg { color: #1a7f1a; font-size: 1.2em; font-weight: bold; }
+.error-msg { color: #c00; font-size: 1.1em; font-weight: bold; }
+.highlight-success { animation: highlight-success 1.2s; }
+.highlight-error { animation: highlight-error 0.9s; }
+@keyframes highlight-success {
+  0% { background: #eaffea; }
+  100% { background: none; }
+}
+@keyframes highlight-error {
+  0% { background: #ffeaea; }
+  100% { background: none; }
+}`;
+document.head.appendChild(style2);
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {

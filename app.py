@@ -20,6 +20,12 @@ def decrypt_message(token):
     except Exception:
         return "Código inválido"
 
+# Código de desbloqueio da porta (apenas para a crew autorizada)
+DOOR_UNLOCK_CODE = "4729#XZ"
+
+# Mensagem criptografada para a crew autorizada
+ENCRYPTED_UNLOCK_CODE = encrypt_message(DOOR_UNLOCK_CODE)
+
 @app.route("/")
 def index():
     # Lista de tripulantes
@@ -45,20 +51,33 @@ def index():
         {"id": "rafael", "name": "Rafael", "img": "/static/img/crew19.png", "access": False, "role": "Criptógrafo"},
         {"id": "sara", "name": "Sara", "img": "/static/img/crew20.png", "access": False, "role": "Capitã"},
     ]
-    access_message = "ACESSO LIBERADO"
-    encrypted = encrypt_message(access_message)
-    return render_template("index.html", encrypted=encrypted, crew=crew)
+    return render_template("index.html", encrypted=ENCRYPTED_UNLOCK_CODE, crew=crew)
 
 @app.route("/check_access", methods=["POST"])
 def check_access():
     data = request.json
     crew = data.get("crew")
     code = data.get("code")
-    if crew in AUTHORIZED_CREW:
+    if crew == "karina":
         decrypted = decrypt_message(code)
+        if decrypted == DOOR_UNLOCK_CODE:
+            decrypted = (
+                "✅ <b>Acesso autorizado!</b><br>"
+                f"Código de desbloqueio: <span style=\"font-size:1.3em;letter-spacing:2px;background:#eaffea;padding:2px 8px;border-radius:6px;\">{DOOR_UNLOCK_CODE}</span><br>"
+                "<i>Siga os protocolos de segurança ao entrar.</i>"
+            )
         return jsonify({"access": True, "decrypted": decrypted})
     else:
-        return jsonify({"access": False, "decrypted": "Acesso negado"})
+        return jsonify({"access": False, "decrypted": "🚫 <b>Acesso negado!</b> Esta área é restrita a pessoal autorizado."})
+
+@app.route("/get_token/<crew_id>")
+def get_token(crew_id):
+    if crew_id == "karina":
+        encrypted = encrypt_message(DOOR_UNLOCK_CODE)
+    else:
+        access_message = f"ACESSO LIBERADO:{crew_id}"
+        encrypted = encrypt_message(access_message)
+    return jsonify({"encrypted": encrypted})
 
 import os
 if __name__ == "__main__":
