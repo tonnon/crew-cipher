@@ -1,3 +1,180 @@
+<style>
+.crew-list {
+    width: 350px;
+    background: linear-gradient(145deg, #23263a 0%, #1a1d2e 100%);
+    border: 2px solid #00e0ff;
+    border-radius: 8px;
+    padding: 0;
+    height: 80vh;
+    overflow: hidden;
+    box-shadow: 
+        0 8px 32px rgba(0, 224, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.crew-manifest-title {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: linear-gradient(145deg, #1a1d2e 0%, #23263a 100%);
+    color: #00e0ff;
+    font-family: 'Press Start 2P', Verdana, Arial, sans-serif;
+    font-size: 10px;
+    padding: 12px 16px;
+    margin: 0;
+    border-bottom: 1px solid #00e0ff;
+    border-radius: 6px 6px 0 0;
+    letter-spacing: 1px;
+    text-align: center;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
+}
+
+.crew-list-content {
+    flex: 1;
+    padding: 16px 20px 20px 20px;
+    padding-right: 15px;
+    overflow-y: auto;
+}
+
+/* Custom scrollbar for crew list content only */
+.crew-list-content::-webkit-scrollbar {
+    width: 8px;
+    background: transparent;
+}
+
+.crew-list-content::-webkit-scrollbar-track {
+    background: rgba(35, 38, 58, 0.3);
+    border-radius: 8px;
+    margin: 5px;
+}
+
+.crew-list-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(145deg, rgba(0, 224, 255, 0.6) 0%, rgba(0, 153, 204, 0.8) 100%);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 224, 255, 0.3);
+}
+
+.crew-list-content::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(145deg, rgba(0, 224, 255, 0.8) 0%, rgba(0, 153, 204, 1) 100%);
+    box-shadow: 0 0 8px rgba(0, 224, 255, 0.4);
+}
+
+.crew-member {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    cursor: pointer;
+    border-radius: 12px;
+    padding: 8px 4px;
+    min-height: 64px;
+    background: linear-gradient(135deg, rgba(0, 224, 255, 0.05) 0%, rgba(35, 38, 58, 0.8) 100%);
+    border: 1px solid rgba(0, 224, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: Verdana, Arial, sans-serif;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+.crew-member.selected, .crew-member:hover {
+    background: linear-gradient(135deg, rgba(0, 224, 255, 0.2) 0%, rgba(0, 224, 255, 0.1) 100%);
+    border-color: #00e0ff;
+    box-shadow: 
+        0 4px 20px rgba(0, 224, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.crew-member::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 224, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.crew-member:hover::before {
+    left: 100%;
+}
+
+.crew-img {
+    width: 48px; 
+    height: 48px;
+    image-rendering: pixelated;
+    border: 2px solid #00e0ff;
+    border-radius: 8px;
+    margin-right: 16px;
+    background: linear-gradient(145deg, #111 0%, #1a1a1a 100%);
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.crew-member:hover .crew-img {
+    border-color: #00e0ff;
+    box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(0, 224, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+/* Crew Member Text Content */
+.crew-member .crew-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 6px;
+}
+
+.crew-member .crew-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    margin: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.crew-member .crew-id {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+    font-family: 'Courier New', monospace;
+}
+
+.crew-member.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    filter: grayscale(0.8);
+}
+
+.crew-member.disabled .crew-img {
+    border-color: #666;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.crew-member.disabled .crew-name {
+    color: #888;
+}
+
+.crew-member.disabled .crew-id {
+    color: #555;
+}
+</style>
+
 <div class="crew-list" id="crew-list">
-    <!-- Lista de tripulantes gerada por JS -->
+    <div class="crew-manifest-title">CREW MANIFEST</div>
+    <div class="crew-list-content" id="crew-list-content">
+        <!-- Lista de tripulantes gerada por JS -->
+    </div>
 </div>

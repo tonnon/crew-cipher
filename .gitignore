@@ -1,0 +1,9 @@
+# Ignora arquivos de ambiente e chaves secretas
+.env
+.env.*
+# Ignora arquivos de cache do Python
+__pycache__/
+*.pyc
+# Ignora arquivos temporários do sistema
+.DS_Store
+Thumbs.db

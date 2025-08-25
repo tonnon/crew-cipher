@@ -1,0 +1,80 @@
+<style>
+.button {
+    padding: 16px 40px;
+    font-size: 22px;
+    font-family: 'Montserrat', Verdana, Arial, sans-serif;
+    border: 2px solid;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px #0005;
+    cursor: pointer;
+    letter-spacing: 2px;
+    transition: background 0.2s, color 0.2s;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    /* Remove default display to avoid conflitos */
+}
+
+.button.play-button {
+    background: linear-gradient(90deg, #00ff6a 60%, #009e3a 100%);
+    color: #222;
+    border-color: #00ff6a;
+    display: block;
+    margin: 20px auto;
+}
+
+.button.play-button:hover {
+    background: #009e3a;
+    color: #fff;
+}
+
+.button.try-again-button {
+    background: linear-gradient(90deg, #ffeb3b 60%, #ffb300 100%);
+    color: #222;
+    border-color: #ffb300;
+    display: block;
+    margin: 20px auto;
+    padding: 10px 28px;
+    font-size: 18px;
+    border-radius: 8px;
+    letter-spacing: 1px;
+}
+
+.button.try-again-button:hover {
+    background: #ffb300;
+    color: #fff;
+}
+
+.button:active {
+    transform: scale(0.98);
+}
+
+.button.play-button:active {
+    transform: scale(0.98);
+}
+
+.button.try-again-button:active {
+    transform: scale(0.98);
+}
+
+.button.hidden {
+    display: none !important;
+}
+
+.button.visible {
+    display: block !important;
+}
+
+.button.play-button.visible {
+    display: block !important;
+}
+
+.button.try-again-button.visible {
+    display: block !important;
+}
+</style>
+
+<div class="button-container" id="button-container">
+    <button id="play-btn" class="button play-button hidden">▶ Jogar</button>
+    <button id="retry-btn" class="button try-again-button hidden">Tente novamente</button>
+</div>

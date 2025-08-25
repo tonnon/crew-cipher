@@ -1,0 +1,70 @@
+<style>
+.message {
+    font-size: 1.1em;
+    font-weight: bold;
+    background: #181c2b;
+    border-radius: 10px;
+    padding: 16px 22px 12px 22px;
+    display: inline-block;
+    margin: 0 auto;
+    transition: background 0.5s, box-shadow 0.5s;
+    text-shadow: none;
+    text-align: center;
+    max-width: 90%;
+    word-wrap: break-word;
+    font-family: 'Montserrat', Verdana, Arial, sans-serif;
+}
+
+.message.success-message {
+    color: #00e0ff;
+    font-size: 1.2em;
+    border: 2px solid #00e0ff;
+    box-shadow: 0 2px 16px #00e0ff22;
+    padding: 18px 24px 14px 24px;
+    animation: fadeInScale 1.2s cubic-bezier(.22,1,.36,1);
+}
+
+.message.error-message {
+    color: #ff003c;
+    font-size: 1.1em;
+    border: 2px solid #ff003c;
+    box-shadow: 0 2px 16px #ff003c22;
+    padding: 16px 22px 12px 22px;
+    animation: fadeInScale 1.1s cubic-bezier(.22,1,.36,1);
+}
+
+.message-container {
+    margin-top: 40px;
+    text-align: center;
+    min-height: 32px;
+    font-family: Verdana, Arial, sans-serif;
+}
+
+.message-container.highlight-success {
+    animation: highlightSuccessBg 1.2s;
+}
+
+.message-container.highlight-error {
+    animation: highlightErrorBg 1.1s;
+}
+
+@keyframes fadeInScale {
+    0% { opacity: 0; transform: scale(0.7); }
+    60% { opacity: 1; transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes highlightSuccessBg {
+    0% { background: #00e0ff22; }
+    100% { background: none; }
+}
+
+@keyframes highlightErrorBg {
+    0% { background: #ff003c22; }
+    100% { background: none; }
+}
+</style>
+
+<div class="message-container" id="message-container">
+    <!-- Message content will be dynamically inserted here -->
+</div>
