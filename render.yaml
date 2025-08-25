@@ -5,3 +5,10 @@ services:
     buildCommand: "pip install -r requirements.txt"
     startCommand: "python app.py"
     plan: free
+    envVars:
+      - key: DOOR_UNLOCK_CODE
+        value: "ALPHA-7X9Z-BETA"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FLASK_ENV
+        value: "production"
