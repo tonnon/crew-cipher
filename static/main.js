@@ -167,6 +167,7 @@ function updateTimerDisplay() {
             document.body.appendChild(timerDiv); // fallback
         }
     }
+    // Timer com radar animado e fonte digital
     timerDiv.textContent = `⏰ Tempo: ${timeLeft}s`;
 }
 
@@ -237,11 +238,11 @@ function showRetryButton(msg) {
     document.getElementById('message-container').innerHTML = `
         <div class="message error-message">${alertMsg}</div>
     `;
-    
-    // Show retry button using visibility control
+
+    // Mostra o botão de tentar novamente e esconde o de jogar
     const playBtn = document.getElementById('play-btn');
     const retryBtn = document.getElementById('retry-btn');
-    
+
     if (playBtn) {
         playBtn.classList.add('hidden');
         playBtn.classList.remove('visible');
@@ -250,13 +251,20 @@ function showRetryButton(msg) {
         retryBtn.classList.remove('hidden');
         retryBtn.classList.add('visible');
     }
-    
+
     showAlarmEffect();
     renderCrewList();
-    
+
+    // Garante que o botão só pode ser mostrado por tempo ou maxAttempts
     if (retryBtn) {
         retryBtn.onclick = function() {
             // Reinicia o jogo imediatamente ao clicar
+            if (playBtn) {
+                playBtn.classList.remove('visible');
+                playBtn.classList.add('hidden');
+            }
+            retryBtn.classList.add('hidden');
+            retryBtn.classList.remove('visible');
             fetch('/restart', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
@@ -313,6 +321,12 @@ function removeAlarmEffect() {
 document.addEventListener('DOMContentLoaded', function() {
     renderCrewList();
     selectCrew(0);
+    // Sempre esconde o botão de tentar novamente ao iniciar
+    const retryBtn = document.getElementById('retry-btn');
+    if (retryBtn) {
+        retryBtn.classList.add('hidden');
+        retryBtn.classList.remove('visible');
+    }
     // Mostrar botão de jogar inicialmente
     showPlayButton();
 });

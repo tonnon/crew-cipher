@@ -199,25 +199,21 @@ def restart():
 
 @app.route("/check_access", methods=["POST"])
 def check_access():
-    papel = None
-    if crew_member:
-        papel = crew_member["role"].strip()
-    print(f"[DEBUG /check_access] crew_id={crew_id} papel={papel} nomes={nomes} roles={roles}")
     data = request.json
     crew_id = data.get("crew")
     code = data.get("code")
-    
+
     # Obter dados da sessão
     nomes = session.get('crew_names')
     roles = session.get('crew_roles')
     shuffled_crew = session.get('shuffled_crew')
-    
+
     if not nomes or not roles or not shuffled_crew:
         nomes, roles, shuffled_crew = generate_random_crew()
         session['crew_names'] = nomes
         session['crew_roles'] = roles
         session['shuffled_crew'] = shuffled_crew
-    
+
     # Construir lista atual da tripulação
     crew_list = []
     for i, c in enumerate(shuffled_crew):
@@ -228,24 +224,29 @@ def check_access():
             "role": roles[i],
         }
         crew_list.append(crew_member)
-    
+
     crew_member = next((c for c in crew_list if c["id"] == crew_id), None)
+    papel = None
+    if crew_member:
+        papel = crew_member["role"].strip()
+    print(f"[DEBUG /check_access] crew_id={crew_id} papel={papel} nomes={nomes} roles={roles}")
+
     if not crew_member:
         return jsonify({"access": False, "decrypted": "🚫 <b>Tripulante não encontrado!</b>"})
-    
+
     # ABSOLUTE ACCESS CONTROL: Only "Materiais Perigosos" role is allowed
     # Any other role gets immediate denial - NO EXCEPTIONS
-    if crew_member["role"].strip() != "Materiais Perigosos":
+    if papel != "Materiais Perigosos":
         return jsonify({
-            "access": False, 
+            "access": False,
             "decrypted": f"🚫 <b>Acesso negado!</b><br>Papel: {crew_member['role']}<br>Esta área é restrita apenas ao pessoal de Materiais Perigosos."
         })
-    
+
     # ONLY "Materiais Perigosos" role can reach this point
     # Double-check the role to be absolutely sure
-    if crew_member["role"].strip() == "Materiais Perigosos":
+    if papel == "Materiais Perigosos":
         decrypted = decrypt_message(code)
-        
+
         # Only allow access if decryption matches exactly
         if decrypted.strip() == DOOR_UNLOCK_CODE.strip():
             mensagem = (
@@ -256,18 +257,35 @@ def check_access():
             return jsonify({"access": True, "decrypted": mensagem})
         else:
             return jsonify({"access": False, "decrypted": "🚫 <b>Código inválido!</b> Tente novamente."})
-    
+
     # Final failsafe - should never reach here, but deny access anyway
     return jsonify({"access": False, "decrypted": "🚫 <b>Acesso negado!</b> Erro de autorização."})
 
 @app.route("/get_token/<crew_id>")
 def get_token(crew_id):
+    # Obter dados da sessão para encontrar o tripulante correto
+    nomes = session.get('crew_names', [])
+    roles = session.get('crew_roles', [])
+    shuffled_crew = session.get('shuffled_crew', BASE_CREW)
+    
+    # Construir lista atual da tripulação
+    crew_list = []
+    for i, c in enumerate(shuffled_crew):
+        crew_member = {
+            "id": c["id"],
+            "name": nomes[i] if i < len(nomes) else f"Tripulante{i+1}",
+            "img": c["img"],
+            "role": roles[i] if i < len(roles) else c["role"],
+        }
+        crew_list.append(crew_member)
+
+    # Encontrar o tripulante pelo ID
+    crew_member = next((c for c in crew_list if c["id"] == crew_id), None)
+
     papel = None
     if crew_member:
         papel = crew_member["role"].strip()
     print(f"[DEBUG /get_token] crew_id={crew_id} papel={papel} nomes={nomes} roles={roles}")
-    # Obter dados da sessão para encontrar o tripulante correto
-    nomes = session.get('crew_names', [])
     roles = session.get('crew_roles', [])
     shuffled_crew = session.get('shuffled_crew', BASE_CREW)
     
