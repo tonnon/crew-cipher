@@ -74,6 +74,9 @@ function drag(ev) {
 function drop(ev) {
     ev.preventDefault();
     if (!timerActive) return;
+    // Se já acertou, não permite mais tentativas
+    if (!timerActive) return;
+    // Se já errou 3 vezes, bloqueia tudo
     if (attempts >= maxAttempts) {
         showAlarmEffect();
         showRetryButton('Você excedeu o número de tentativas! Vazamento detectado! Risco de explosão!');
@@ -88,7 +91,6 @@ function drop(ev) {
     })
     .then(r => r.json())
     .then(data => {
-        attempts++;
         if(data.access) {
             const messageContainer = document.getElementById('message-container');
             messageContainer.innerHTML = '<div class="message success-message">' + data.decrypted + '</div>';
@@ -96,9 +98,15 @@ function drop(ev) {
             setTimeout(() => messageContainer.classList.remove('highlight-success'), 1200);
             timerActive = false;
             clearInterval(timer);
+            // Impede qualquer nova tentativa após sucesso
+            attempts = maxAttempts;
             showSuccessEffect();
         } else {
-            disabledCrew[selected] = true;
+            attempts++;
+            // Só desabilita se NÃO for Materiais Perigosos
+            if (!(crew[selected].role && crew[selected].role.trim() === 'Materiais Perigosos')) {
+                disabledCrew[selected] = true;
+            }
             renderCrewList();
             const messageContainer = document.getElementById('message-container');
             messageContainer.innerHTML = '<div class="message error-message">' + data.decrypted + ` (${attempts}/${maxAttempts} tentativas)` + '</div>';
@@ -175,15 +183,49 @@ function showPlayButton() {
         retryBtn.classList.add('hidden');
         retryBtn.classList.remove('visible');
     }
-    
+
     if (playBtn) {
         playBtn.onclick = function() {
             playBtn.classList.add('hidden');
             playBtn.classList.remove('visible');
-            gameStarted = true;
-            timerActive = true; // Libera a lista imediatamente
-            renderCrewList();
-            startTimer();
+            // Sempre reinicia a tripulação ao jogar
+            fetch('/restart', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.ok && data.crew) {
+                    window.crew = data.crew;
+                    crew = data.crew;
+                    attempts = 0;
+                    disabledCrew = Array(crew.length).fill(false);
+                    gameStarted = true;
+                    timerActive = true;
+                    renderCrewList();
+                    selectCrew(0);
+                    document.getElementById('message-container').innerHTML = '';
+                    let timerDiv = document.getElementById('game-timer');
+                    if (timerDiv) timerDiv.remove();
+                    removeAlarmEffect();
+                    startTimer();
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao iniciar:', error);
+                // fallback local
+                attempts = 0;
+                disabledCrew = Array(crew.length).fill(false);
+                gameStarted = true;
+                timerActive = true;
+                renderCrewList();
+                selectCrew(0);
+                document.getElementById('message-container').innerHTML = '';
+                let timerDiv = document.getElementById('game-timer');
+                if (timerDiv) timerDiv.remove();
+                removeAlarmEffect();
+                startTimer();
+            });
         };
     }
 }
@@ -214,7 +256,7 @@ function showRetryButton(msg) {
     
     if (retryBtn) {
         retryBtn.onclick = function() {
-            // Fazer requisição para reiniciar com nova tripulação
+            // Reinicia o jogo imediatamente ao clicar
             fetch('/restart', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
@@ -222,48 +264,34 @@ function showRetryButton(msg) {
             .then(r => r.json())
             .then(data => {
                 if (data.ok && data.crew) {
-                    // Atualizar a lista global de tripulantes com os novos dados
                     window.crew = data.crew;
                     crew = data.crew;
-                    
-                    // Reiniciar o jogo com a nova tripulação
                     attempts = 0;
                     disabledCrew = Array(crew.length).fill(false);
-                    gameStarted = false; // Reset game state
-                    timerActive = false;
-                    
-                    // Atualizar interface
-                    renderCrewList();
-                    selectCrew(0);
-                    document.getElementById('message-container').innerHTML = '';
-                    
-                    // Remover timer antigo e efeitos
-                    let timerDiv = document.getElementById('game-timer');
-                    if (timerDiv) timerDiv.remove();
-                    removeAlarmEffect();
-                    
-                    // Mostrar botão de jogar novamente
-                    // showPlayButton();
                     gameStarted = true;
                     timerActive = true;
                     renderCrewList();
+                    selectCrew(0);
+                    document.getElementById('message-container').innerHTML = '';
+                    let timerDiv = document.getElementById('game-timer');
+                    if (timerDiv) timerDiv.remove();
+                    removeAlarmEffect();
                     startTimer();
                 }
             })
             .catch(error => {
                 console.error('Erro ao reiniciar:', error);
-                // Fallback para reiniciar localmente se houver erro
                 attempts = 0;
                 disabledCrew = Array(crew.length).fill(false);
-                gameStarted = false; // Reset game state
-                timerActive = false;
+                gameStarted = true;
+                timerActive = true;
                 renderCrewList();
                 selectCrew(0);
                 document.getElementById('message-container').innerHTML = '';
                 let timerDiv = document.getElementById('game-timer');
                 if (timerDiv) timerDiv.remove();
                 removeAlarmEffect();
-                showPlayButton(); // Show play button again
+                startTimer();
             });
         };
     }

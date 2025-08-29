@@ -163,6 +163,10 @@ def generate_random_crew():
 @app.route("/")
 def index():
     nomes, roles, shuffled_crew = generate_random_crew()
+    # Atualiza a sessão para garantir consistência
+    session['crew_names'] = nomes
+    session['crew_roles'] = roles
+    session['shuffled_crew'] = shuffled_crew
     crew = []
     for i, c in enumerate(shuffled_crew):
         crew.append({
@@ -195,6 +199,10 @@ def restart():
 
 @app.route("/check_access", methods=["POST"])
 def check_access():
+    papel = None
+    if crew_member:
+        papel = crew_member["role"].strip()
+    print(f"[DEBUG /check_access] crew_id={crew_id} papel={papel} nomes={nomes} roles={roles}")
     data = request.json
     crew_id = data.get("crew")
     code = data.get("code")
@@ -254,6 +262,10 @@ def check_access():
 
 @app.route("/get_token/<crew_id>")
 def get_token(crew_id):
+    papel = None
+    if crew_member:
+        papel = crew_member["role"].strip()
+    print(f"[DEBUG /get_token] crew_id={crew_id} papel={papel} nomes={nomes} roles={roles}")
     # Obter dados da sessão para encontrar o tripulante correto
     nomes = session.get('crew_names', [])
     roles = session.get('crew_roles', [])
@@ -269,20 +281,20 @@ def get_token(crew_id):
             "role": roles[i] if i < len(roles) else c["role"],
         }
         crew_list.append(crew_member)
-    
+
     # Encontrar o tripulante pelo ID
     crew_member = next((c for c in crew_list if c["id"] == crew_id), None)
-    
-    # ABSOLUTE TOKEN CONTROL: Only "Materiais Perigosos" gets the real token
-    # Everyone else gets a guaranteed failure token
-    if crew_member and crew_member["role"].strip() == "Materiais Perigosos":
-        # Generate the actual unlock token
+
+    # Reforço: só retorna token real se o papel for exatamente 'Materiais Perigosos'
+    papel = None
+    if crew_member:
+        papel = crew_member["role"].strip()
+    if papel == "Materiais Perigosos":
         encrypted = encrypt_message(DOOR_UNLOCK_CODE)
     else:
-        # Generate a token that will NEVER match DOOR_UNLOCK_CODE
-        fake_code = f"FAKE_CODE_FOR_{crew_id}_ROLE_{crew_member['role'] if crew_member else 'UNKNOWN'}_DENIED"
+        fake_code = f"FAKE_CODE_FOR_{crew_id}_ROLE_{papel if papel else 'UNKNOWN'}_DENIED"
         encrypted = encrypt_message(fake_code)
-    
+
     return jsonify({"encrypted": encrypted})
 
 if __name__ == "__main__":
