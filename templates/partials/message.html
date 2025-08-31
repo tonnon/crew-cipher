@@ -68,3 +68,40 @@
 <div class="message-container" id="message-container">
     <!-- Message content will be dynamically inserted here -->
 </div>
+
+<script>
+// Message component functionality
+class MessageComponent {
+    constructor() {
+        this.container = document.getElementById('message-container');
+    }
+    
+    // Show message with type (success or error)
+    showMessage(message, type) {
+        if (!this.container) return;
+        
+        const cssClass = type === 'success' ? 'success-message' : 'error-message';
+        const highlightClass = type === 'success' ? 'highlight-success' : 'highlight-error';
+        
+        this.container.innerHTML = `<div class="message ${cssClass}">${message}</div>`;
+        this.container.classList.add(highlightClass);
+        
+        // Auto-remove highlight after animation
+        const duration = type === 'success' ? 1200 : 900;
+        setTimeout(() => {
+            this.container.classList.remove(highlightClass);
+        }, duration);
+    }
+    
+    // Clear message
+    clearMessage() {
+        if (this.container) {
+            this.container.innerHTML = '';
+            this.container.classList.remove('highlight-success', 'highlight-error');
+        }
+    }
+}
+
+// Create global message component instance
+window.messageComponent = new MessageComponent();
+</script>

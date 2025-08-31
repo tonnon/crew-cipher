@@ -1,82 +1,188 @@
 <style>
-.card {
-    width: 180px;
-    height: 260px;
-    background: #23263a;
-    border: 3px solid #00e0ff;
+.badge-card {
+    width: 240px;
+    height: 370px;
+    background: linear-gradient(to bottom, #eaeaea 0%, #fff 100%);
     border-radius: 16px;
-    box-shadow: 0 4px 16px #000a;
+    box-shadow: 0 4px 16px #0002;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    margin: 0 40px;
-    cursor: grab;
-    position: relative;
-}
-
-.card .crew-img {
-    width: 64px;
-    height: 64px;
-    margin: 0 0 12px 0;
-    border-width: 3px;
-    image-rendering: pixelated;
-    border: 3px solid #00e0ff;
-    border-radius: 8px;
-    background: linear-gradient(145deg, #111 0%, #1a1a1a 100%);
-    box-shadow: 
-        0 4px 8px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-}
-
-.card .crew-name,
-.card .crew-access,
-#badge-role {
+    padding: 0;
     font-family: 'Montserrat', Verdana, Arial, sans-serif;
+    position: relative;
+    border: none;
+    overflow: hidden;
+}
+.badge-header {
+    width: 100%;
+    background: #555;
     color: #fff;
-}
-
-.card .crew-name {
-    font-size: 16px;
-    margin-bottom: 8px;
     text-align: center;
+    padding: 16px 0 8px 0;
+    border-radius: 16px 16px 0 0;
+    font-size: 1.1em;
+    font-weight: bold;
+    letter-spacing: 2px;
 }
-
-.card .crew-access {
-    font-size: 12px;
-    color: #00e0ff;
+.badge-logo {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+.badge-logo-sub {
+    font-size: 0.8em;
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+}
+.badge-photo-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+.badge-photo {
+    width: 88px;
+    height: 104px;
+    border-radius: 6px;
+    border: 2px solid #bbb;
+    object-fit: cover;
+    background: #eaeaea;
+    margin-top: 8px;
     margin-bottom: 8px;
 }
-
-.card .crew-role {
-    font-size: 12px;
-    color: #fff;
+.badge-photo-placeholder {
+    width: 88px;
+    height: 104px;
+    background: #eaeaea;
+    border-radius: 6px;
+    border: 2px solid #bbb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    font-size: 2em;
+    margin-top: 8px;
     margin-bottom: 8px;
+}
+.badge-info-section {
+    width: 100%;
     text-align: center;
-}
-
-.card .crew-crypto {
-    font-size: 10px;
-    word-break: break-all;
-    color: #00e0ff;
-    margin: 8px 0 0 0;
-    text-align: center;
-    padding: 0 8px;
-    max-width: 100%;
-    overflow-wrap: break-word;
-}
-
-#badge-role {
-    font-size: 12px;
-    color: #fff;
     margin-bottom: 8px;
+}
+.badge-name {
+    font-size: 1.15em;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 2px;
+    letter-spacing: 1px;
+}
+.badge-role {
+    font-size: 0.95em;
+    color: #555;
+    margin-bottom: 2px;
+    letter-spacing: 1px;
+}
+.badge-id {
+    font-size: 0.85em;
+    color: #888;
+    margin-bottom: 2px;
+}
+.badge-barcode-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    background: #fff;
+    border-radius: 0 0 16px 16px;
+    margin-bottom: 8px;
+}
+.badge-footer {
+    width: 100%;
+    text-align: center;
+    font-size: 0.85em;
+    color: #555;
+    background: #f7f7f7;
+    padding: 6px 0 8px 0;
+    border-radius: 0 0 16px 16px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
 }
 </style>
 
-<div class="card" id="badge" draggable="true" ondragstart="drag(event)">
-    <img src="/static/img/crew01.png" class="crew-img" id="badge-img" alt="Tripulante">
-    <div class="crew-name" id="badge-name">Tripulante 1</div>
-    <div class="crew-role" id="badge-role"></div>
-    <div class="crew-crypto" id="badge-crypto"></div>
+<div class="badge-card" id="badge" draggable="true" ondragstart="drag(event)">
+    <div class="badge-header">
+        <img src="/static/img/neptune_logistics_logo.svg" alt="Neptune Logistics Logo" style="height:38px; margin-bottom:2px;" />
+        <div class="badge-logo-sub">A W E S O M E</div>
+    </div>
+    <div class="badge-photo-section">
+        <img src="/static/img/crew01.png" class="badge-photo" id="badge-img" alt="Crew Photo" style="display:block;">
+    </div>
+    <div class="badge-info-section">
+        <div class="badge-name" id="badge-name">First - Last Name</div>
+        <div class="badge-role" id="badge-role">DESIGNATION</div>
+        <div class="badge-id" id="badge-id">ID: 000</div>
+    </div>
+    <div class="badge-barcode-section">
+        <img id="badge-qrcode-img" width="88" height="88" style="background:transparent;border-radius:4px;box-shadow:0 0 4px #5552;display:block;" alt="QR Code" />
+    </div>
+    <div class="badge-footer">
+    </div>
 </div>
+
+<script>
+// Badge component functionality
+class BadgeComponent {
+    constructor() {
+        this.element = document.getElementById('badge');
+        this.img = document.getElementById('badge-img');
+        this.name = document.getElementById('badge-name');
+        this.role = document.getElementById('badge-role');
+        this.id = document.getElementById('badge-id');
+        this.qrImg = document.getElementById('badge-qrcode-img');
+        this.currentCode = '';
+    }
+    // Update badge with crew member data
+    updateBadge(crewMember) {
+        if (!crewMember) return;
+        this.img.src = crewMember.img;
+        this.name.textContent = crewMember.name;
+        this.role.textContent = crewMember.role;
+        this.id.textContent = 'ID: ' + crewMember.id;
+        // Fetch encrypted token and QR code
+        fetch(`/get_token/${crewMember.id}`)
+            .then(r => {
+                if (!r.ok) throw new Error('Network response was not ok');
+                return r.json();
+            })
+            .then(data => {
+                this.currentCode = data.encrypted;
+                if (this.qrImg && data.qr_base64) {
+                    this.qrImg.src = 'data:image/png;base64,' + data.qr_base64;
+                    this.qrImg.style.display = '';
+                } else if (this.qrImg) {
+                    this.qrImg.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching token:', error);
+                this.currentCode = '';
+                if (this.qrImg) this.qrImg.style.display = 'none';
+            });
+    }
+    getCurrentCode() {
+        return this.currentCode;
+    }
+}
+function drag(ev) {
+    if (window.gameController && window.gameController.isGameBlocked()) {
+        ev.preventDefault();
+        return false;
+    }
+    ev.dataTransfer.setData("text", "badge");
+}
+window.badgeComponent = new BadgeComponent();
+</script>

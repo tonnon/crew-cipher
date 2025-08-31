@@ -1,22 +1,409 @@
 <style>
+:root {
+    --timer-bg: linear-gradient(135deg, #0a0f1a, #1a2332, #0f1b2d, #162540);
+    --timer-color: #00ff7f;
+    --timer-font-family: 'Courier New', 'Orbitron', 'Share Tech Mono', monospace;
+    --timer-font-size: 22px;
+    --timer-font-weight: bold;
+    --timer-padding: 18px 32px;
+    --timer-border: 2px solid #00ff7f;
+    --timer-radius: 12px;
+    --timer-width: 320px;
+    --timer-max-width: 90vw;
+    --timer-shadow: 0 0 25px rgba(0, 255, 127, 0.4), 0 0 50px rgba(0, 255, 255, 0.2), inset 0 0 25px rgba(0, 255, 127, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+    --timer-text-shadow: 0 0 10px rgba(0, 255, 127, 0.8);
+    --timer-blur: blur(3px);
+    --timer-border-left: 4px solid #00ff7f;
+    --timer-border-right: 4px solid #00ffff;
+    --timer-progress-bg: rgba(0, 50, 50, 0.8);
+    --timer-progress-radius: 4px;
+    --timer-progress-border: 1px solid rgba(0, 255, 127, 0.4);
+    --timer-progress-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+    --timer-progress-bar-bg: linear-gradient(90deg, #00ff7f, #00ffaa, #00ff7f);
+    --timer-progress-bar-shadow: 0 0 10px rgba(0, 255, 127, 0.7), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+    --timer-progress-bar-after-bg: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    --timer-critical-border-left: #ff4444;
+    --timer-critical-border-right: #ff6666;
+    --timer-critical-progress-border: rgba(255, 68, 68, 0.6);
+    --timer-critical-progress-bg: rgba(100, 0, 0, 0.9);
+    --timer-critical-progress-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7), 0 0 10px rgba(255, 68, 68, 0.5);
+    --timer-critical-progress-bar-bg: linear-gradient(90deg, #ff4444, #ff6666, #ff4444);
+    --timer-critical-progress-bar-shadow: 0 0 15px rgba(255, 68, 68, 0.9), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+    --timer-critical-progress-bar-after-bg: linear-gradient(90deg, transparent, rgba(255, 200, 200, 0.8), transparent);
+    --timer-critical-text-shadow: 0 0 15px rgba(255, 68, 68, 1);
+    --timer-critical-text-color: #ffffff;
+    --timer-critical-after-color: rgba(255, 68, 68, 0.9);
+    --timer-scanlines-bg: repeating-linear-gradient(90deg, #00ff7f, #00ff7f 8px, transparent 8px, transparent 16px);
+    --timer-after-color: rgba(0, 255, 127, 0.6);
+    --timer-after-font-size: 8px;
+    --timer-hover-shadow: 0 0 35px rgba(0, 255, 127, 0.6), 0 0 70px rgba(0, 255, 255, 0.3), inset 0 0 35px rgba(0, 255, 127, 0.15), inset 0 3px 6px rgba(255, 255, 255, 0.15);
+    --timer-hover-text-shadow: 0 0 15px rgba(0, 255, 127, 1);
+    --timer-hover-progress-bar-shadow: 0 0 15px rgba(0, 255, 127, 0.9), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+    --timer-hover-border-left-color: #00ffff;
+    --timer-hover-border-right-color: #00ff7f;
+}
+
+/*
+  ATTENTION: The colors and gradients used in the keyframes below (sonarPing, alertFlashing, etc.)
+  must be kept in sync with the CSS variables declared in :root above.
+  Standard CSS does not allow the use of var(--my-color) inside @keyframes for box-shadow/background.
+  If you change the main timer colors, remember to update them here as well!
+*/
+@keyframes sonarPing {
+    0% { 
+        box-shadow: 0 0 0 0 rgba(0, 255, 127, 0.8), 
+                    0 0 0 0 rgba(0, 255, 255, 0.4);
+    }
+    50% { 
+        box-shadow: 0 0 0 20px rgba(0, 255, 127, 0.3), 
+                    0 0 0 40px rgba(0, 255, 255, 0.1);
+    }
+    100% { 
+        box-shadow: 0 0 0 30px rgba(0, 255, 127, 0), 
+                    0 0 0 60px rgba(0, 255, 255, 0);
+    }
+}
+
+@keyframes shipScanlines {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 0; }
+}
+
+/*
+  The colors and gradients below are also related to the timer's critical state.
+  Keep them in sync with the :root variables.
+*/
+@keyframes alertFlashing {
+    0%, 100% { 
+        background: linear-gradient(135deg, #ff4444, #cc0000, #ff1111);
+        border-color: #ff4444;
+        color: #ffffff;
+        box-shadow: 
+            0 0 20px rgba(255, 68, 68, 0.6),
+            inset 0 0 30px rgba(255, 68, 68, 0.2);
+    }
+    50% { 
+        background: linear-gradient(135deg, #ff6666, #ff4444, #ff3333);
+        border-color: #ff6666;
+        color: #ffeeee;
+        box-shadow: 
+            0 0 30px rgba(255, 68, 68, 0.8),
+            inset 0 0 40px rgba(255, 68, 68, 0.3);
+    }
+}
+
+@keyframes systemGlitch {
+    0%, 100% { transform: translateX(0) skewX(0deg); }
+    10% { transform: translateX(-1px) skewX(-0.5deg); }
+    20% { transform: translateX(1px) skewX(0.5deg); }
+    30% { transform: translateX(-1px) skewX(-0.2deg); }
+    40% { transform: translateX(1px) skewX(0.2deg); }
+    50% { transform: translateX(0) skewX(0deg); }
+}
+
+@keyframes powerBar {
+    0% { width: 100%; }
+    100% { width: 0%; }
+}
+
 .game-timer {
-    background: #222;
-    color: #ffeb3b;
-    font-family: 'Montserrat', Verdana, Arial, sans-serif;
-    font-size: 18px;
-    padding: 8px 18px;
-    border: 2px solid #ffb300;
-    border-radius: 8px;
-    margin: 10px auto;
+    background: var(--timer-bg);
+    color: var(--timer-color);
+    font-family: var(--timer-font-family);
+    font-size: var(--timer-font-size);
+    font-weight: var(--timer-font-weight);
+    padding: var(--timer-padding);
+    border: var(--timer-border);
+    border-radius: var(--timer-radius);
+    margin: 0 auto 20px;
     text-align: center;
-    min-width: 180px;
+    width: var(--timer-width);
+    max-width: var(--timer-max-width);
+    box-shadow: var(--timer-shadow);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    text-shadow: var(--timer-text-shadow);
+    backdrop-filter: var(--timer-blur);
+    display: none;
+    align-self: center;
+    flex-shrink: 0;
+    border-left: var(--timer-border-left);
+    border-right: var(--timer-border-right);
+}
+
+.game-timer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--timer-scanlines-bg);
+    opacity: 0.7;
+    animation: shipScanlines 2s linear infinite;
+}
+
+.game-timer::after {
+    content: 'SHIP CHRONOMETER';
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: var(--timer-after-font-size);
+    font-weight: normal;
+    color: var(--timer-after-color);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.game-timer:hover {
+    transform: scale(1.02) translateY(-2px);
+    box-shadow: var(--timer-hover-shadow);
+    animation: sonarPing 2s infinite;
+    border-left-color: var(--timer-hover-border-left-color);
+    border-right-color: var(--timer-hover-border-right-color);
+}
+
+.game-timer:hover .timer-text {
+    letter-spacing: 4px;
+    text-shadow: var(--timer-hover-text-shadow);
+}
+
+.game-timer:hover .timer-progress-bar {
+    box-shadow: var(--timer-hover-progress-bar-shadow);
+}
+
+.timer-content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    min-height: 42px;
+    flex-wrap: nowrap;
+    margin-top: 8px;
+}
+
+.timer-text {
+    font-weight: 900;
+    letter-spacing: 2px;
+    position: relative;
+    white-space: nowrap;
+    text-transform: uppercase;
+    font-size: 1em;
+    line-height: 1.2;
+    font-family: 'Courier New', monospace;
+}
+
+.timer-progress {
+    position: absolute;
+    bottom: 6px;
+    left: 6px;
+    right: 6px;
+    height: 8px;
+    background: var(--timer-progress-bg);
+    border-radius: var(--timer-progress-radius);
+    overflow: hidden;
+    border: var(--timer-progress-border);
+    box-shadow: var(--timer-progress-shadow);
+}
+
+.timer-progress-bar {
+    height: 100%;
+    background: var(--timer-progress-bar-bg);
+    border-radius: 3px;
+    animation: powerBar 30s linear;
+    box-shadow: var(--timer-progress-bar-shadow);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.timer-progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--timer-progress-bar-after-bg);
+    animation: shipScanlines 1.5s linear infinite;
+}
+
+/* Critical alert state (10 seconds or less) */
+.game-timer.critical {
+    animation: alertFlashing 0.6s infinite, systemGlitch 0.15s infinite;
+    border-width: 3px;
+    transform: scale(1.03);
+    border-left-color: var(--timer-critical-border-left);
+    border-right-color: var(--timer-critical-border-right);
+}
+
+.game-timer.critical::after {
+    content: '⚠ CRITICAL ALERT ⚠';
+    color: var(--timer-critical-after-color);
+    animation: alertFlashing 0.3s infinite;
+}
+
+.game-timer.critical .timer-text {
+    letter-spacing: 5px;
+    font-size: 1.15em;
+    color: var(--timer-critical-text-color);
+    text-shadow: var(--timer-critical-text-shadow);
+}
+
+.game-timer.critical .timer-progress {
+    border-color: var(--timer-critical-progress-border);
+    background: var(--timer-critical-progress-bg);
+    box-shadow: var(--timer-critical-progress-shadow);
+}
+
+.game-timer.critical .timer-progress-bar {
+    background: var(--timer-critical-progress-bar-bg);
+    animation: powerBar 30s linear;
+    box-shadow: var(--timer-critical-progress-bar-shadow);
+}
+
+.game-timer.critical .timer-progress-bar::after {
+    background: var(--timer-critical-progress-bar-after-bg);
+    animation: shipScanlines 0.8s linear infinite;
+}
+
+@keyframes shipRadar {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive design for ship HUD */
+@media (max-width: 480px) {
+    .game-timer {
+        font-size: 18px;
+        padding: 14px 24px;
+        width: 280px;
+        margin: 15px auto;
+    }
+    
+
+    .timer-text {
+        letter-spacing: 1.5px;
+        font-size: 0.9em;
+    }
+    
+    .timer-content {
+        gap: 14px;
+        min-height: 36px;
+        margin-top: 6px;
+    }
+    
+    .timer-progress {
+        height: 6px;
+    }
+    
+    .game-timer::after {
+        font-size: 7px;
+    }
+}
+
+@media (max-width: 320px) {
+    .game-timer {
+        font-size: 16px;
+        padding: 12px 18px;
+        width: 260px;
+    }
+    
+    .timer-text {
+        letter-spacing: 1px;
+        font-size: 0.85em;
+    }
+    
+    .timer-content {
+        gap: 12px;
+        min-height: 32px;
+        margin-top: 4px;
+    }
+    
+    .timer-progress {
+        height: 5px;
+    }
+    
+    .game-timer::after {
+        font-size: 6px;
+    }
 }
 </style>
 
-<div id="timer-container">
-    <!-- Timer will be dynamically inserted here -->
+<div id="timer-container" class="game-timer">
+    <div class="timer-content">
+        <!-- Timer content will be dynamically inserted here -->
+    </div>
+    <div class="timer-progress">
+        <div class="timer-progress-bar"></div>
+    </div>
 </div>
 
-<div id="timer-container">
-    <!-- Timer will be dynamically inserted here -->
-</div>
+<script>
+// Timer component functions - centralized timer management
+    class TimerComponent {
+        constructor() {
+            this.container = document.getElementById('timer-container');
+            this.content = this.container?.querySelector('.timer-content');
+            this.progressBar = this.container?.querySelector('.timer-progress-bar');
+        }
+        
+        // Update timer display with current time
+        updateTime(timeLeft) {
+            if (!this.content) return;
+            this.content.innerHTML = `<span class="timer-text">TEMPO: ${timeLeft}s</span>`;
+            
+            // Add critical state for low time
+            if (timeLeft <= 10) {
+                this.container?.classList.add('critical');
+            } else {
+                this.container?.classList.remove('critical');
+            }
+        }
+        
+        // Show timer component
+        show() {
+            if (this.container) {
+                this.container.style.display = 'block';
+            }
+        }
+        
+        // Hide timer component
+        hide() {
+            if (this.container) {
+                this.container.style.display = 'none';
+                this.container.classList.remove('critical');
+            }
+        }
+        
+        // Reset timer state and animations
+        reset() {
+            if (this.content) {
+                this.content.innerHTML = '';
+            }
+            if (this.container) {
+                this.container.classList.remove('critical');
+            }
+            if (this.progressBar) {
+                this.progressBar.style.animation = 'none';
+                this.progressBar.offsetHeight; // Trigger reflow
+                this.progressBar.style.animation = 'powerBar 30s linear';
+            }
+        }
+        
+        // Start progress bar animation
+        startProgress() {
+            if (this.progressBar) {
+                this.progressBar.style.animation = 'none';
+                this.progressBar.offsetHeight; // Trigger reflow
+                this.progressBar.style.animation = 'powerBar 30s linear';
+            }
+        }
+    }
+
+    // Create global timer component instance
+    window.timerComponent = new TimerComponent();
+</script>

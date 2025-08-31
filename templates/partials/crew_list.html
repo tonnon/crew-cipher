@@ -1,16 +1,69 @@
 <style>
+:root {
+    --crew-list-width: 350px;
+    --crew-list-bg: linear-gradient(145deg, #23263a 0%, #1a1d2e 100%);
+    --crew-list-border: 2px solid #00e0ff;
+    --crew-list-radius: 8px;
+    --crew-list-shadow: 0 8px 32px rgba(0, 224, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    --crew-list-blur: blur(10px);
+    --crew-list-title-bg: linear-gradient(145deg, #1a1d2e 0%, #23263a 100%);
+    --crew-list-title-color: #00e0ff;
+    --crew-list-title-font: 'Press Start 2P', Verdana, Arial, sans-serif;
+    --crew-list-title-size: 14px;
+    --crew-list-title-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --crew-list-title-border: 1px solid #00e0ff;
+    --crew-list-content-padding: 16px 20px 20px 20px;
+    --crew-list-content-padding-right: 15px;
+    --crew-scrollbar-width: 8px;
+    --crew-scrollbar-bg: transparent;
+    --crew-scrollbar-track-bg: rgba(35, 38, 58, 0.3);
+    --crew-scrollbar-thumb-bg: linear-gradient(145deg, rgba(0, 224, 255, 0.6) 0%, rgba(0, 153, 204, 0.8) 100%);
+    --crew-scrollbar-thumb-hover-bg: linear-gradient(145deg, rgba(0, 224, 255, 0.8) 0%, rgba(0, 153, 204, 1) 100%);
+    --crew-scrollbar-thumb-border: 1px solid rgba(0, 224, 255, 0.3);
+    --crew-scrollbar-thumb-hover-shadow: 0 0 8px rgba(0, 224, 255, 0.4);
+    --crew-member-radius: 12px;
+    --crew-member-padding: 8px 16px;
+    --crew-member-min-height: 64px;
+    --crew-member-bg: linear-gradient(135deg, rgba(0, 224, 255, 0.05) 0%, rgba(35, 38, 58, 0.8) 100%);
+    --crew-member-border: 1px solid rgba(0, 224, 255, 0.2);
+    --crew-member-font: Verdana, Arial, sans-serif;
+    --crew-member-color: #fff;
+    --crew-member-selected-bg: linear-gradient(135deg, rgba(0, 224, 255, 0.2) 0%, rgba(0, 224, 255, 0.1) 100%);
+    --crew-member-selected-border: #00e0ff;
+    --crew-member-selected-shadow: 0 4px 20px rgba(0, 224, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    --crew-member-img-size: 48px;
+    --crew-member-img-border: 2px solid #00e0ff;
+    --crew-member-img-radius: 8px;
+    --crew-member-img-bg: linear-gradient(145deg, #111 0%, #1a1a1a 100%);
+    --crew-member-img-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    --crew-member-img-hover-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 224, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    --crew-member-img-hover-scale: 1.05;
+    --crew-member-name-font-size: 14px;
+    --crew-member-name-font-weight: bold;
+    --crew-member-name-color: #fff;
+    --crew-member-name-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --crew-member-id-font-size: 10px;
+    --crew-member-id-color: rgba(255, 255, 255, 0.6);
+    --crew-member-id-font: 'Courier New', monospace;
+    --crew-member-disabled-opacity: 0.4;
+    --crew-member-disabled-filter: grayscale(0.8);
+    --crew-member-disabled-img-border: #666;
+    --crew-member-disabled-img-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    --crew-member-disabled-name-color: #888;
+    --crew-member-disabled-id-color: #555;
+    --crew-member-hover-glow: linear-gradient(90deg, transparent, rgba(0, 224, 255, 0.1), transparent);
+}
+
 .crew-list {
-    width: 350px;
-    background: linear-gradient(145deg, #23263a 0%, #1a1d2e 100%);
-    border: 2px solid #00e0ff;
-    border-radius: 8px;
+    width: var(--crew-list-width);
+    background: var(--crew-list-bg);
+    border: var(--crew-list-border);
+    border-radius: var(--crew-list-radius);
     padding: 0;
     height: 80vh;
     overflow: hidden;
-    box-shadow: 
-        0 8px 32px rgba(0, 224, 255, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
+    box-shadow: var(--crew-list-shadow);
+    backdrop-filter: var(--crew-list-blur);
     position: relative;
     display: flex;
     flex-direction: column;
@@ -20,49 +73,48 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    background: linear-gradient(145deg, #1a1d2e 0%, #23263a 100%);
-    color: #00e0ff;
-    font-family: 'Press Start 2P', Verdana, Arial, sans-serif;
-    font-size: 10px;
+    background: var(--crew-list-title-bg);
+    color: var(--crew-list-title-color);
+    font-family: var(--crew-list-title-font);
+    font-size: var(--crew-list-title-size);
     padding: 12px 16px;
     margin: 0;
-    border-bottom: 1px solid #00e0ff;
+    border-bottom: var(--crew-list-title-border);
     border-radius: 6px 6px 0 0;
     letter-spacing: 1px;
     text-align: center;
     white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--crew-list-title-shadow);
     flex-shrink: 0;
 }
 
 .crew-list-content {
     flex: 1;
-    padding: 16px 20px 20px 20px;
-    padding-right: 15px;
+    padding: var(--crew-list-content-padding);
+    padding-right: var(--crew-list-content-padding-right);
     overflow-y: auto;
 }
 
-/* Custom scrollbar for crew list content only */
 .crew-list-content::-webkit-scrollbar {
-    width: 8px;
-    background: transparent;
+    width: var(--crew-scrollbar-width);
+    background: var(--crew-scrollbar-bg);
 }
 
 .crew-list-content::-webkit-scrollbar-track {
-    background: rgba(35, 38, 58, 0.3);
-    border-radius: 8px;
+    background: var(--crew-scrollbar-track-bg);
+    border-radius: var(--crew-list-radius);
     margin: 5px;
 }
 
 .crew-list-content::-webkit-scrollbar-thumb {
-    background: linear-gradient(145deg, rgba(0, 224, 255, 0.6) 0%, rgba(0, 153, 204, 0.8) 100%);
-    border-radius: 8px;
-    border: 1px solid rgba(0, 224, 255, 0.3);
+    background: var(--crew-scrollbar-thumb-bg);
+    border-radius: var(--crew-list-radius);
+    border: var(--crew-scrollbar-thumb-border);
 }
 
 .crew-list-content::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(145deg, rgba(0, 224, 255, 0.8) 0%, rgba(0, 153, 204, 1) 100%);
-    box-shadow: 0 0 8px rgba(0, 224, 255, 0.4);
+    background: var(--crew-scrollbar-thumb-hover-bg);
+    box-shadow: var(--crew-scrollbar-thumb-hover-shadow);
 }
 
 .crew-member {
@@ -70,24 +122,22 @@
     align-items: center;
     margin-bottom: 16px;
     cursor: pointer;
-    border-radius: 12px;
-    padding: 8px 16px;
-    min-height: 64px;
-    background: linear-gradient(135deg, rgba(0, 224, 255, 0.05) 0%, rgba(35, 38, 58, 0.8) 100%);
-    border: 1px solid rgba(0, 224, 255, 0.2);
+    border-radius: var(--crew-member-radius);
+    padding: var(--crew-member-padding);
+    min-height: var(--crew-member-min-height);
+    background: var(--crew-member-bg);
+    border: var(--crew-member-border);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-family: Verdana, Arial, sans-serif;
-    color: #fff;
+    font-family: var(--crew-member-font);
+    color: var(--crew-member-color);
     position: relative;
     overflow: hidden;
 }
 
 .crew-member.selected, .crew-member:hover {
-    background: linear-gradient(135deg, rgba(0, 224, 255, 0.2) 0%, rgba(0, 224, 255, 0.1) 100%);
-    border-color: #00e0ff;
-    box-shadow: 
-        0 4px 20px rgba(0, 224, 255, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    background: var(--crew-member-selected-bg);
+    border-color: var(--crew-member-selected-border);
+    box-shadow: var(--crew-member-selected-shadow);
     transform: translateY(-2px);
 }
 
@@ -98,7 +148,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(0, 224, 255, 0.1), transparent);
+    background: var(--crew-member-hover-glow);
     transition: left 0.5s;
 }
 
@@ -107,29 +157,23 @@
 }
 
 .crew-img {
-    width: 48px; 
-    height: 48px;
+    width: var(--crew-member-img-size);
+    height: var(--crew-member-img-size);
     image-rendering: pixelated;
-    border: 2px solid #00e0ff;
-    border-radius: 8px;
+    border: var(--crew-member-img-border);
+    border-radius: var(--crew-member-img-radius);
     margin-right: 16px;
-    background: linear-gradient(145deg, #111 0%, #1a1a1a 100%);
-    box-shadow: 
-        0 4px 8px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    background: var(--crew-member-img-bg);
+    box-shadow: var(--crew-member-img-shadow);
     transition: all 0.3s ease;
 }
 
 .crew-member:hover .crew-img {
-    border-color: #00e0ff;
-    box-shadow: 
-        0 6px 12px rgba(0, 0, 0, 0.4),
-        0 0 20px rgba(0, 224, 255, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    transform: scale(1.05);
+    border-color: var(--crew-member-selected-border);
+    box-shadow: var(--crew-member-img-hover-shadow);
+    transform: scale(var(--crew-member-img-hover-scale));
 }
 
-/* Crew Member Text Content */
 .crew-member .crew-info {
     display: flex;
     flex-direction: column;
@@ -138,43 +182,140 @@
 }
 
 .crew-member .crew-name {
-    font-size: 14px;
-    font-weight: bold;
-    color: #fff;
+    font-size: var(--crew-member-name-font-size);
+    font-weight: var(--crew-member-name-font-weight);
+    color: var(--crew-member-name-color);
     margin: 0;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    text-shadow: var(--crew-member-name-shadow);
 }
 
 .crew-member .crew-id {
-    font-size: 10px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--crew-member-id-font-size);
+    color: var(--crew-member-id-color);
     margin: 0;
-    font-family: 'Courier New', monospace;
+    font-family: var(--crew-member-id-font);
 }
 
 .crew-member.disabled {
-    opacity: 0.4;
+    opacity: var(--crew-member-disabled-opacity);
     pointer-events: none;
-    filter: grayscale(0.8);
+    filter: var(--crew-member-disabled-filter);
 }
 
 .crew-member.disabled .crew-img {
-    border-color: #666;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-color: var(--crew-member-disabled-img-border);
+    box-shadow: var(--crew-member-disabled-img-shadow);
 }
 
 .crew-member.disabled .crew-name {
-    color: #888;
+    color: var(--crew-member-disabled-name-color);
 }
 
 .crew-member.disabled .crew-id {
-    color: #555;
+    color: var(--crew-member-disabled-id-color);
 }
 </style>
 
 <div class="crew-list" id="crew-list">
     <div class="crew-manifest-title">Manifesto da Tripulação</div>
     <div class="crew-list-content" id="crew-list-content">
-        <!-- Lista de tripulantes gerada por JS -->
+        <!-- Crew list generated by JS -->
     </div>
 </div>
+
+<script>
+    // Crew List component functionality
+    class CrewListComponent {
+        constructor() {
+            this.contentContainer = document.getElementById('crew-list-content');
+            this.crew = window.crew || [];
+            this.selected = 0;
+            this.disabledCrew = Array(this.crew.length).fill(false);
+        }
+        
+        // Update crew data
+        updateCrew(newCrew) {
+            this.crew = newCrew;
+            this.disabledCrew = Array(this.crew.length).fill(false);
+        }
+        
+        // Render crew list
+        render(gameStarted = false, timerActive = false, attempts = 0, maxAttempts = 3) {
+            if (!this.contentContainer) return;
+            
+            // Clear only crew member elements from the content area
+            const crewMembers = this.contentContainer.querySelectorAll('.crew-member');
+            crewMembers.forEach(member => member.remove());
+            
+            // Block if NOT started, OR time ended, OR max attempts OR access granted
+            const block = !gameStarted || !timerActive || attempts >= maxAttempts;
+            
+            this.crew.forEach((c, i) => {
+                const div = document.createElement('div');
+                div.className = 'crew-member' + (i === this.selected ? ' selected' : '') + (this.disabledCrew[i] || block ? ' disabled' : '');
+                
+                // Only make clickable if not disabled individually AND not globally blocked
+                if (!this.disabledCrew[i] && !block) {
+                    div.onclick = () => this.selectCrew(i);
+                    div.tabIndex = 0;
+                }
+                
+                // Modern crew member structure with info section
+                div.innerHTML = `
+                    <img src="${c.img}" class="crew-img" alt="Tripulante">
+                    <div class="crew-info">
+                        <div class="crew-name">${c.name}</div>
+                        <div class="crew-id">ID: ${c.id}</div>
+                    </div>
+                `;
+                
+                this.contentContainer.appendChild(div);
+            });
+        }
+        
+        // Select crew member
+        selectCrew(index) {
+            this.selected = index;
+            
+            // Update badge component
+            if (window.badgeComponent) {
+                window.badgeComponent.updateBadge(this.crew[index]);
+            }
+            
+            // Re-render to update selection
+            if (window.gameController) {
+                this.render(
+                    window.gameController.gameStarted,
+                    window.gameController.timerActive,
+                    window.gameController.attempts,
+                    window.gameController.maxAttempts
+                );
+            }
+        }
+        
+        // Disable crew member
+        disableCrew(index) {
+            if (index >= 0 && index < this.disabledCrew.length) {
+                this.disabledCrew[index] = true;
+            }
+        }
+        
+        // Reset disabled crew
+        resetDisabled() {
+            this.disabledCrew = Array(this.crew.length).fill(false);
+        }
+        
+        // Get selected crew member
+        getSelected() {
+            return this.crew[this.selected];
+        }
+        
+        // Get selected index
+        getSelectedIndex() {
+            return this.selected;
+        }
+    }
+
+    // Create global crew list component instance
+    window.crewListComponent = new CrewListComponent();
+</script>

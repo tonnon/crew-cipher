@@ -290,3 +290,54 @@
     <div class="door-dot dot4"></div>
     <div class="door-section-label">SECTION<br>B4</div>
 </div>
+
+<script>
+// Door component functionality
+class DoorComponent {
+    constructor() {
+        this.element = document.getElementById('door');
+    }
+    
+    // Show success door opening effect
+    showSuccessEffect() {
+        if (!this.element) return;
+        
+        this.element.classList.add('open');
+        
+        setTimeout(() => {
+            this.element.classList.remove('open');
+        }, 2500);
+    }
+    
+    // Show alarm effect (red flashing)
+    showAlarmEffect() {
+        if (this.element) {
+            this.element.classList.add('alarm');
+        }
+    }
+    
+    // Remove alarm effect
+    removeAlarmEffect() {
+        if (this.element) {
+            this.element.classList.remove('alarm');
+        }
+    }
+}
+
+// Drag and drop functions for door
+function allowDrop(ev) { 
+    ev.preventDefault(); 
+}
+
+function drop(ev) {
+    ev.preventDefault();
+    
+    // Call the main game logic for processing the drop
+    if (window.gameController) {
+        window.gameController.processDropAttempt();
+    }
+}
+
+// Create global door component instance
+window.doorComponent = new DoorComponent();
+</script>

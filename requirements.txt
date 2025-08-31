@@ -1,5 +1,5 @@
-
 Flask
 cryptography
 python-dotenv
 gunicorn
+qrcode[pil]

@@ -1,6 +1,28 @@
+import io
+import qrcode
+def generate_qr_base64(data):
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=4,
+        border=1,
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    buf.seek(0)
+    return base64.b64encode(buf.read()).decode()
 
 from flask import Flask, render_template, request, jsonify, session
 import os
+import random
+import base64
+from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+
 # Carrega variáveis de ambiente do .env antes de qualquer uso de os.environ
 try:
     from dotenv import load_dotenv
@@ -10,21 +32,12 @@ except ImportError:
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "supersecretkey")
-from cryptography.fernet import Fernet
-
-
-# Simulação de tripulantes autorizados
-AUTHORIZED_CREW = {"karina"}
 
 # Chave secreta para criptografia (fixa para sessão)
 # Usar chave fixa para que a criptografia funcione consistentemente
 FERNET_KEY = os.environ.get("FERNET_KEY")
 if not FERNET_KEY:
     # Gerar chave fixa baseada em uma string conhecida para desenvolvimento
-    import base64
-    from cryptography.hazmat.primitives import hashes
-    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-    
     password = b"crewcipher-demo-key"  # Chave fixa para desenvolvimento
     salt = b"static-salt-123456"  # Salt fixo para desenvolvimento
     kdf = PBKDF2HMAC(
@@ -45,6 +58,7 @@ def decrypt_message(token):
         return fernet.decrypt(token.encode()).decode()
     except Exception:
         return "Código inválido"
+
 
 # Código de desbloqueio da porta (obrigatório em produção)
 
@@ -104,7 +118,6 @@ BASE_CREW = [
 
 def generate_random_crew():
     """Gera nomes e papéis aleatórios para a tripulação usando algoritmo"""
-    import random
     
     # Algoritmo para gerar nomes aleatórios
     def generate_random_name():
@@ -160,6 +173,35 @@ def generate_random_crew():
     
     return generated_names, roles, shuffled_crew
 
+
+def build_crew_list(nomes, roles, shuffled_crew):
+    """Helper function to build crew list from session data"""
+    crew_list = []
+    for i, c in enumerate(shuffled_crew):
+        crew_member = {
+            "id": c["id"],
+            "name": nomes[i] if i < len(nomes) else f"Tripulante{i+1}",
+            "img": c["img"],
+            "role": roles[i] if i < len(roles) else c["role"],
+        }
+        crew_list.append(crew_member)
+    return crew_list
+
+
+def get_session_crew_data():
+    """Get crew data from session or generate new if missing"""
+    nomes = session.get('crew_names')
+    roles = session.get('crew_roles')
+    shuffled_crew = session.get('shuffled_crew')
+    
+    if not nomes or not roles or not shuffled_crew:
+        nomes, roles, shuffled_crew = generate_random_crew()
+        session['crew_names'] = nomes
+        session['crew_roles'] = roles
+        session['shuffled_crew'] = shuffled_crew
+    
+    return nomes, roles, shuffled_crew
+
 @app.route("/")
 def index():
     nomes, roles, shuffled_crew = generate_random_crew()
@@ -167,14 +209,8 @@ def index():
     session['crew_names'] = nomes
     session['crew_roles'] = roles
     session['shuffled_crew'] = shuffled_crew
-    crew = []
-    for i, c in enumerate(shuffled_crew):
-        crew.append({
-            "id": c["id"],
-            "name": nomes[i],
-            "img": c["img"],
-            "role": roles[i],
-        })
+    
+    crew = build_crew_list(nomes, roles, shuffled_crew)
     return render_template("index.html", encrypted=ENCRYPTED_UNLOCK_CODE, crew=crew)
 # Endpoint para reiniciar rodada com nova tripulação aleatória
 @app.route("/restart", methods=["POST"])
@@ -185,51 +221,32 @@ def restart():
     session['crew_roles'] = roles
     session['shuffled_crew'] = shuffled_crew
     
-    # Construir nova lista da tripulação para retornar
-    crew = []
-    for i, c in enumerate(shuffled_crew):
-        crew.append({
-            "id": c["id"],
-            "name": nomes[i],
-            "img": c["img"],
-            "role": roles[i],
-        })
-    
+    crew = build_crew_list(nomes, roles, shuffled_crew)
     return jsonify({"ok": True, "crew": crew})
 
 @app.route("/check_access", methods=["POST"])
 def check_access():
     data = request.json
+    if not data:
+        return jsonify({"access": False, "decrypted": "🙫 <b>Dados inválidos!</b>"})
+        
     crew_id = data.get("crew")
     code = data.get("code")
+    
+    if not crew_id or not code:
+        return jsonify({"access": False, "decrypted": "🙫 <b>Dados incompletos!</b>"})
 
     # Obter dados da sessão
-    nomes = session.get('crew_names')
-    roles = session.get('crew_roles')
-    shuffled_crew = session.get('shuffled_crew')
-
-    if not nomes or not roles or not shuffled_crew:
-        nomes, roles, shuffled_crew = generate_random_crew()
-        session['crew_names'] = nomes
-        session['crew_roles'] = roles
-        session['shuffled_crew'] = shuffled_crew
+    nomes, roles, shuffled_crew = get_session_crew_data()
 
     # Construir lista atual da tripulação
-    crew_list = []
-    for i, c in enumerate(shuffled_crew):
-        crew_member = {
-            "id": c["id"],
-            "name": nomes[i],
-            "img": c["img"],
-            "role": roles[i],
-        }
-        crew_list.append(crew_member)
+    crew_list = build_crew_list(nomes, roles, shuffled_crew)
 
     crew_member = next((c for c in crew_list if c["id"] == crew_id), None)
     papel = None
     if crew_member:
         papel = crew_member["role"].strip()
-    print(f"[DEBUG /check_access] crew_id={crew_id} papel={papel} nomes={nomes} roles={roles}")
+
 
     if not crew_member:
         return jsonify({"access": False, "decrypted": "🚫 <b>Tripulante não encontrado!</b>"})
@@ -239,7 +256,7 @@ def check_access():
     if papel != "Materiais Perigosos":
         return jsonify({
             "access": False,
-            "decrypted": f"🚫 <b>Acesso negado!</b><br>Papel: {crew_member['role']}<br>Esta área é restrita apenas ao pessoal de Materiais Perigosos."
+            "decrypted": f"🚫 <b>Acesso negado!</b>"
         })
 
     # ONLY "Materiais Perigosos" role can reach this point
@@ -264,56 +281,20 @@ def check_access():
 @app.route("/get_token/<crew_id>")
 def get_token(crew_id):
     # Obter dados da sessão para encontrar o tripulante correto
-    nomes = session.get('crew_names', [])
-    roles = session.get('crew_roles', [])
-    shuffled_crew = session.get('shuffled_crew', BASE_CREW)
-    
+    nomes, roles, shuffled_crew = get_session_crew_data()
     # Construir lista atual da tripulação
-    crew_list = []
-    for i, c in enumerate(shuffled_crew):
-        crew_member = {
-            "id": c["id"],
-            "name": nomes[i] if i < len(nomes) else f"Tripulante{i+1}",
-            "img": c["img"],
-            "role": roles[i] if i < len(roles) else c["role"],
-        }
-        crew_list.append(crew_member)
-
+    crew_list = build_crew_list(nomes, roles, shuffled_crew)
     # Encontrar o tripulante pelo ID
     crew_member = next((c for c in crew_list if c["id"] == crew_id), None)
-
-    papel = None
-    if crew_member:
-        papel = crew_member["role"].strip()
-    print(f"[DEBUG /get_token] crew_id={crew_id} papel={papel} nomes={nomes} roles={roles}")
-    roles = session.get('crew_roles', [])
-    shuffled_crew = session.get('shuffled_crew', BASE_CREW)
-    
-    # Construir lista atual da tripulação
-    crew_list = []
-    for i, c in enumerate(shuffled_crew):
-        crew_member = {
-            "id": c["id"],
-            "name": nomes[i] if i < len(nomes) else f"Tripulante{i+1}",
-            "img": c["img"],
-            "role": roles[i] if i < len(roles) else c["role"],
-        }
-        crew_list.append(crew_member)
-
-    # Encontrar o tripulante pelo ID
-    crew_member = next((c for c in crew_list if c["id"] == crew_id), None)
-
     # Reforço: só retorna token real se o papel for exatamente 'Materiais Perigosos'
-    papel = None
-    if crew_member:
-        papel = crew_member["role"].strip()
+    papel = crew_member["role"].strip() if crew_member else None
     if papel == "Materiais Perigosos":
         encrypted = encrypt_message(DOOR_UNLOCK_CODE)
     else:
         fake_code = f"FAKE_CODE_FOR_{crew_id}_ROLE_{papel if papel else 'UNKNOWN'}_DENIED"
         encrypted = encrypt_message(fake_code)
-
-    return jsonify({"encrypted": encrypted})
+    qr_base64 = generate_qr_base64(encrypted)
+    return jsonify({"encrypted": encrypted, "qr_base64": qr_base64})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
