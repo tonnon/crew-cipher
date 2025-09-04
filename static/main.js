@@ -78,7 +78,7 @@ class GameController {
             if (this.timeLeft <= 0) {
                 this.timerActive = false;
                 clearInterval(this.timer);
-                this.showGameEnd('Tempo esgotado! Vazamento detectado! Risco de explosão!');
+                this.showGameEnd('Vazamento detectado! Risco de explosão!');
             }
         }, 1000);
     }
