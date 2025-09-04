@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
 body {
     font-family: 'Montserrat', Verdana, Arial, sans-serif;
     background: #181c2b url('https://www.transparenttextures.com/patterns/brushed-alum.png');
@@ -6,6 +7,7 @@ body {
     margin: 0;
     letter-spacing: 0.5px;
 }
+
 .hud {
     font-family: 'Montserrat', Verdana, Arial, sans-serif;
     background: #23263a;
@@ -18,6 +20,7 @@ body {
     color: #00e0ff;
     text-shadow: none;
 }
+
 .main {
     display: flex;
     flex-direction: row;
@@ -35,8 +38,6 @@ body {
     display: flex;
     flex-direction: column;
 }
-
-
 
 ::-webkit-scrollbar { 
     width: 12px; 
@@ -57,7 +58,3 @@ body {
         inset 0 1px 0 rgba(255, 255, 255, 0.3),
         0 0 10px rgba(0, 224, 255, 0.4);
 }
-
-
-
-
