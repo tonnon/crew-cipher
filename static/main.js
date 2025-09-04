@@ -92,7 +92,7 @@ class GameController {
     processDropAttempt() {
         if (!this.timerActive || this.attempts >= this.maxAttempts) {
             if (this.attempts >= this.maxAttempts) {
-                this.showGameEnd('Você excedeu o número de tentativas! Vazamento detectado! Risco de explosão!');
+                this.showGameEnd('Vazamento detectado! Risco de explosão!');
             }
             return;
         }
