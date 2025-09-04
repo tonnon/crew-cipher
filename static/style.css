@@ -31,7 +31,8 @@ body {
     position: relative;
 }
 
-.game-area {
+.game-area, 
+.door-area {
     align-items: center;
     margin-left: auto;
     margin-right: auto;
