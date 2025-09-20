@@ -1,137 +1,167 @@
+
 <style>
+:root {
+    --badge-width: 260px;
+    --badge-bg: linear-gradient(145deg, #eaeaea 0%, #fff 100%);
+    --badge-radius: 16px;
+    --badge-shadow: 0 4px 24px #0003;
+    --badge-font: 'Montserrat', Verdana, Arial, sans-serif;
+    --badge-header-bg: #555;
+    --badge-header-color: #fff;
+    --badge-header-size: 1.1em;
+    --badge-header-weight: bold;
+    --badge-header-padding: 18px 0 10px 0;
+    --badge-photo-size-w: 92px;
+    --badge-photo-size-h: 108px;
+    --badge-photo-radius: 8px;
+    --badge-photo-border: 2px solid #bbb;
+    --badge-photo-bg: #eaeaea;
+    --badge-info-name-size: 1.18em;
+    --badge-info-role-size: 1em;
+    --badge-info-id-size: 0.9em;
+    --badge-info-color: #222;
+    --badge-info-role-color: #555;
+    --badge-info-id-color: #888;
+    --badge-barcode-radius: 0 0 16px 16px;
+    --badge-barcode-margin: 12px 0 16px 0;
+    --badge-footer-bg: #f7f7f7;
+}
+
+.badge-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 18px auto;
+}
 .badge-card {
-    width: 240px;
-    height: auto;
-    background: linear-gradient(to bottom, #eaeaea 0%, #fff 100%);
-    border-radius: 16px;
-    box-shadow: 0 4px 16px #0002;
+    width: var(--badge-width);
+    background: var(--badge-bg);
+    border-radius: var(--badge-radius);
+    box-shadow: var(--badge-shadow);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0;
-    font-family: 'Montserrat', Verdana, Arial, sans-serif;
+    font-family: var(--badge-font);
     position: relative;
     border: none;
     overflow: hidden;
+    margin: 0 auto;
 }
 .badge-header {
     width: 100%;
-    background: #555;
-    color: #fff;
+    background: var(--badge-header-bg);
+    color: var(--badge-header-color);
     text-align: center;
-    padding: 16px 0 8px 0;
+    padding: var(--badge-header-padding);
     border-radius: 16px 16px 0 0;
-    font-size: 1.1em;
-    font-weight: bold;
+    font-size: var(--badge-header-size);
+    font-weight: var(--badge-header-weight);
     letter-spacing: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
 }
-.badge-logo {
-    font-size: 1.3em;
-    font-weight: bold;
-    margin-bottom: 2px;
-}
-.badge-logo-sub {
-    font-size: 0.8em;
-    letter-spacing: 3px;
-    margin-bottom: 4px;
-}
+
 .badge-photo-section {
     width: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
     margin: 0;
     padding: 0;
 }
 .badge-photo {
-    width: 88px;
-    height: 104px;
-    border-radius: 6px;
-    border: 2px solid #bbb;
+    width: var(--badge-photo-size-w);
+    height: var(--badge-photo-size-h);
+    border-radius: var(--badge-photo-radius);
+    border: var(--badge-photo-border);
     object-fit: cover;
-    background: #eaeaea;
-    margin-top: 8px;
-    margin-bottom: 8px;
-}
-.badge-photo-placeholder {
-    width: 88px;
-    height: 104px;
-    background: #eaeaea;
-    border-radius: 6px;
-    border: 2px solid #bbb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #aaa;
-    font-size: 2em;
-    margin-top: 8px;
-    margin-bottom: 8px;
+    background: var(--badge-photo-bg);
+    margin: 10px 0 10px 0;
+    display: block;
 }
 .badge-info-section {
     width: 100%;
     text-align: center;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
 }
 .badge-name {
-    font-size: 1.15em;
+    font-size: var(--badge-info-name-size);
     font-weight: bold;
-    color: #222;
-    margin-bottom: 2px;
+    color: var(--badge-info-color);
     letter-spacing: 1px;
 }
 .badge-role {
-    font-size: 0.95em;
-    color: #555;
-    margin-bottom: 2px;
+    font-size: var(--badge-info-role-size);
+    color: var(--badge-info-role-color);
     letter-spacing: 1px;
 }
 .badge-id {
-    font-size: 0.85em;
-    color: #888;
-    margin-bottom: 2px;
+    font-size: var(--badge-info-id-size);
+    color: var(--badge-info-id-color);
 }
 .badge-barcode-section {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex: 1;
-    background: #fff;
-    border-radius: 0 0 16px 16px;
-    margin-bottom: 13px;
+    border-radius: var(--badge-barcode-radius);
+    margin: var(--badge-barcode-margin);
+    min-height: 88px;
 }
 .badge-footer {
     width: 100%;
     text-align: center;
     font-size: 0.85em;
     color: #555;
-    background: #f7f7f7;
+    background: var(--badge-footer-bg);
     padding: 6px 0 8px 0;
     border-radius: 0 0 16px 16px;
     position: absolute;
     bottom: 0;
     left: 0;
 }
+
+/* Badge disabled state */
+.badge-card[draggable="false"] {
+    opacity: 0.5;
+    cursor: not-allowed !important;
+    filter: grayscale(0.6);
+    transform: none !important;
+}
+
+.badge-card[draggable="false"]:hover {
+    transform: none !important;
+}
 </style>
 
-<div class="badge-card" id="badge" draggable="true" ondragstart="drag(event)">
+
+<div class="badge-container">
+  <div class="badge-card" id="badge" draggable="true" ondragstart="drag(event)">
     <div class="badge-header">
-        <img src="/static/img/neptune_logistics_logo.svg" alt="Neptune Logistics Logo" style="height:38px; margin-bottom:2px;" />
-        <div class="badge-logo-sub">A W E S O M E</div>
+      <img src="/static/img/crew_cipher_logo.svg" alt="Crew Cipher Logo" style="height:56px; margin-bottom:4px;" />
     </div>
     <div class="badge-photo-section">
-        <img src="/static/img/crew01.png" class="badge-photo" id="badge-img" alt="Crew Photo" style="display:block;">
+      <img src="/static/img/crew01.png" class="badge-photo" id="badge-img" alt="Crew Photo">
     </div>
     <div class="badge-info-section">
-        <div class="badge-name" id="badge-name">First - Last Name</div>
-        <div class="badge-role" id="badge-role">DESIGNATION</div>
-        <div class="badge-id" id="badge-id">ID: 000</div>
+      <div class="badge-name" id="badge-name"></div>
+      <div class="badge-role" id="badge-role"></div>
+      <div class="badge-id" id="badge-id"></div>
     </div>
     <div class="badge-barcode-section">
-        <img id="badge-qrcode-img" width="88" height="88" style="background:transparent;border-radius:4px;box-shadow:0 0 4px #5552;display:block;" alt="QR Code" />
+      <img id="badge-qrcode-img" width="88" height="88" style="background:transparent;border-radius:4px;box-shadow:0 0 4px #5552;display:block;" alt="QR Code" />
     </div>
-    <div class="badge-footer">
-    </div>
+    <div class="badge-footer"></div>
+  </div>
 </div>
+
 
 <script>
 // Badge component functionality
@@ -144,6 +174,7 @@ class BadgeComponent {
         this.id = document.getElementById('badge-id');
         this.qrImg = document.getElementById('badge-qrcode-img');
         this.currentCode = '';
+        this.dragDisabled = false;
     }
     // Update badge with crew member data
     updateBadge(crewMember) {
@@ -152,6 +183,10 @@ class BadgeComponent {
         this.name.textContent = crewMember.name;
         this.role.textContent = crewMember.role;
         this.id.textContent = 'ID: ' + crewMember.id;
+        
+        // Reset drag state when updating badge
+        this.enableDrag();
+        
         // Fetch encrypted token and QR code
         fetch(`/get_token/${crewMember.id}`)
             .then(r => {
@@ -176,12 +211,46 @@ class BadgeComponent {
     getCurrentCode() {
         return this.currentCode;
     }
+    
+    // Disable drag functionality
+    disableDrag() {
+        this.dragDisabled = true;
+        if (this.element) {
+            this.element.draggable = false;
+            this.element.style.opacity = '0.5';
+            this.element.style.cursor = 'not-allowed';
+            this.element.title = 'Este tripulante já foi testado e falhou na verificação';
+        }
+    }
+    
+    // Enable drag functionality
+    enableDrag() {
+        this.dragDisabled = false;
+        if (this.element) {
+            this.element.draggable = true;
+            this.element.style.opacity = '1';
+            this.element.style.cursor = 'grab';
+            this.element.title = '';
+        }
+    }
+    
+    // Check if drag is disabled
+    isDragDisabled() {
+        return this.dragDisabled;
+    }
 }
 function drag(ev) {
     if (window.gameController && window.gameController.isGameBlocked()) {
         ev.preventDefault();
         return false;
     }
+    
+    // Check if current badge drag is disabled
+    if (window.badgeComponent && window.badgeComponent.isDragDisabled()) {
+        ev.preventDefault();
+        return false;
+    }
+    
     ev.dataTransfer.setData("text", "badge");
 }
 window.badgeComponent = new BadgeComponent();

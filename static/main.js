@@ -141,6 +141,11 @@ class GameController {
         const selectedIndex = window.crewListComponent.getSelectedIndex();
         const selectedCrew = window.crewListComponent.getSelected();
         
+        // Disable drag for the current badge that failed
+        if (window.badgeComponent) {
+            window.badgeComponent.disableDrag();
+        }
+        
         // Only disable crew member if not 'Materiais Perigosos'
         if (selectedCrew.role?.trim() !== 'Materiais Perigosos') {
             window.crewListComponent.disableCrew(selectedIndex);
@@ -240,6 +245,8 @@ document.addEventListener('DOMContentLoaded', function() {
             originalSelectCrew.call(this, index);
             if (window.crew && window.badgeComponent) {
                 window.badgeComponent.updateBadge(window.crew[index]);
+                // Enable drag when selecting a new crew member
+                window.badgeComponent.enableDrag();
             }
         };
     } else {
@@ -251,6 +258,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     originalSelectCrew.call(this, index);
                     if (window.crew && window.badgeComponent) {
                         window.badgeComponent.updateBadge(window.crew[index]);
+                        // Enable drag when selecting a new crew member
+                        window.badgeComponent.enableDrag();
                     }
                 };
             }
