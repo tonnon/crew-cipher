@@ -1,30 +1,64 @@
 
 <style>
 :root {
-    --badge-width: 260px;
-    --badge-bg: linear-gradient(145deg, #eaeaea 0%, #fff 100%);
-    --badge-radius: 16px;
-    --badge-shadow: 0 4px 24px #0003;
-    --badge-font: 'Montserrat', Verdana, Arial, sans-serif;
-    --badge-header-bg: #555;
-    --badge-header-color: #fff;
-    --badge-header-size: 1.1em;
-    --badge-header-weight: bold;
-    --badge-header-padding: 18px 0 10px 0;
-    --badge-photo-size-w: 92px;
-    --badge-photo-size-h: 108px;
-    --badge-photo-radius: 8px;
-    --badge-photo-border: 2px solid #bbb;
-    --badge-photo-bg: #eaeaea;
-    --badge-info-name-size: 1.18em;
+    --bg-white: #fff;
+    --badge-width: 300px;
+    --badge-radius: 24px;
+    --badge-shadow: 0 6px 32px #0002;
+    --badge-font-family: 'Montserrat', Verdana, Arial, sans-serif;
+    --badge-font-weight-bold: 700;
+    --badge-font-weight-semi: 600;
+    --badge-font-weight-medium: 500;
+    --badge-font-weight-normal: 400;
+    --badge-bg: var(--bg-white);
+    --badge-gray: #888;
+    --badge-blue-dark: #17305c;
+    --badge-blue-pill-bg: #e3f0ff;
+    --badge-blue-pill-border: #b3d1f7;
+    --badge-blue-pill-text: #1976d2;
+    --badge-header-bg-main: #1976d2;
+    --badge-header-bg-curve: var(--badge-blue-dark);
+    --badge-header-color: var(--bg-white);
+    --badge-header-logo-size: 60px;
+    --badge-header-company-size: 1.02em;
+    --badge-header-slogan-size: 0.85em;
+    --badge-header-company-color: var(--bg-white);
+    --badge-header-slogan-color: #e3e3e3;
+    --badge-header-padding-top: 18px;
+    --badge-header-height: 90px;
+    --badge-svg-top-height: 150px;
+    --badge-svg-bottom-height: 50px;
+    --badge-svg-stroke: var(--bg-white);
+    --badge-svg-stroke-width: 6;
+    --badge-svg-bottom-stroke: var(--badge-blue-dark);
+    --badge-photo-size: 110px;
+    --badge-photo-border: 6px solid var(--bg-white);
+    --badge-photo-shadow: 0 4px 16px #0002;
+    --badge-photo-bg: var(--bg-white);
+    --badge-photo-margin-top: 105px;
+    --badge-photo-margin-bottom: 18px;
+    --badge-info-name-size: 1.35em;
+    --badge-info-surname-size: 1.35em;
     --badge-info-role-size: 1em;
-    --badge-info-id-size: 0.9em;
-    --badge-info-color: #222;
-    --badge-info-role-color: #555;
-    --badge-info-id-color: #888;
-    --badge-barcode-radius: 0 0 16px 16px;
-    --badge-barcode-margin: 12px 0 16px 0;
-    --badge-footer-bg: #f7f7f7;
+    --badge-info-id-size: 1.08em;
+    --badge-info-label-color: var(--badge-gray);
+    --badge-info-value-color: var(--badge-blue-dark);
+    --badge-info-role-color: var(--badge-blue-pill-text);
+    --badge-info-role-bg: var(--badge-blue-pill-bg);
+    --badge-info-role-border: 1px solid var(--badge-blue-pill-border);
+    --badge-info-gap: 2px;
+    --badge-info-margin-top: 8px;
+    --badge-info-margin-bottom: 2px;
+    --badge-role-margin-bottom: 16px;
+    --badge-role-padding: 3px 14px;
+    --badge-role-radius: 999px;
+    --badge-role-font-weight: var(--badge-font-weight-semi);
+    --badge-role-shadow: 0 1px 4px #1976d211;
+    --badge-id-margin-bottom: 28px;
+    --badge-barcode-section-margin-bottom: 18px;
+    --badge-barcode-size: 70px;
+    --badge-barcode-radius: 4px;
+    --badge-barcode-shadow: 0 0 4px #5552;
 }
 
 .badge-container {
@@ -42,26 +76,42 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: var(--badge-font);
+    font-family: var(--badge-font-family);
     position: relative;
     border: none;
     overflow: hidden;
     margin: 0 auto;
+    min-height: 480px;
 }
-.badge-header {
+.badge-svg-top {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: var(--badge-svg-top-height);
+    z-index: 1;
+    pointer-events: none;
+}
+.badge-svg-bottom {
+    position: absolute;
+    bottom: 0; left: 0; width: 100%; height: var(--badge-svg-bottom-height);
+    z-index: 1;
+    pointer-events: none;
+}
+.badge-header-content {
+    position: absolute;
+    top: var(--badge-header-padding-top);
+    left: 0;
     width: 100%;
-    background: var(--badge-header-bg);
-    color: var(--badge-header-color);
-    text-align: center;
-    padding: var(--badge-header-padding);
-    border-radius: 16px 16px 0 0;
-    font-size: var(--badge-header-size);
-    font-weight: var(--badge-header-weight);
-    letter-spacing: 2px;
+    height: var(--badge-header-height);
+    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    justify-content: flex-start;
+    pointer-events: none;
+}
+.badge-logo {
+    height: var(--badge-header-logo-size);
+    margin-bottom: 4px;
+    pointer-events: auto;
 }
 
 .badge-photo-section {
@@ -69,99 +119,130 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0;
-    padding: 0;
+    position: relative;
+    z-index: 3;
+    margin-top: var(--badge-photo-margin-top);
+    margin-bottom: var(--badge-photo-margin-bottom);
 }
 .badge-photo {
-    width: var(--badge-photo-size-w);
-    height: var(--badge-photo-size-h);
-    border-radius: var(--badge-photo-radius);
+    width: var(--badge-photo-size);
+    height: var(--badge-photo-size);
+    border-radius: 50%;
     border: var(--badge-photo-border);
     object-fit: cover;
     background: var(--badge-photo-bg);
-    margin: 10px 0 10px 0;
     display: block;
+    box-shadow: var(--badge-photo-shadow);
 }
 .badge-info-section {
     width: 100%;
     text-align: center;
-    margin-bottom: 10px;
+    margin: 0 0 0 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    gap: var(--badge-info-gap);
+    z-index: 3;
 }
 .badge-name {
     font-size: var(--badge-info-name-size);
-    font-weight: bold;
-    color: var(--badge-info-color);
+    font-weight: var(--badge-font-weight-bold);
+    color: var(--badge-info-value-color);
     letter-spacing: 1px;
+    margin-bottom: 0px;
+    margin-top: var(--badge-info-margin-top);
+}
+.badge-surname {
+    font-size: var(--badge-info-surname-size);
+    font-weight: var(--badge-font-weight-bold);
+    color: var(--badge-info-value-color);
+    letter-spacing: 1px;
+    margin-bottom: var(--badge-info-margin-bottom);
 }
 .badge-role {
     font-size: var(--badge-info-role-size);
     color: var(--badge-info-role-color);
-    letter-spacing: 1px;
+    background: var(--badge-info-role-bg);
+    border: var(--badge-info-role-border);
+    letter-spacing: 0.5px;
+    font-weight: var(--badge-role-font-weight);
+    margin-bottom: var(--badge-role-margin-bottom);
+    padding: var(--badge-role-padding);
+    border-radius: var(--badge-role-radius);
+    display: inline-block;
+    box-shadow: var(--badge-role-shadow);
+    margin-top: 8px;
+    text-transform: none;
+    text-shadow: none;
+    transition: box-shadow 0.2s;
 }
-.badge-id {
+.badge-id-row {
     font-size: var(--badge-info-id-size);
-    color: var(--badge-info-id-color);
+    color: var(--badge-info-value-color);
+    font-weight: var(--badge-font-weight-semi);
+    margin-bottom: var(--badge-id-margin-bottom);
+}
+.badge-id-label {
+    font-weight: var(--badge-font-weight-medium);
+    color: var(--badge-info-label-color);
+    margin-right: 4px;
 }
 .badge-barcode-section {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: var(--badge-barcode-radius);
-    margin: var(--badge-barcode-margin);
-    min-height: 88px;
+    margin: 0 0 var(--badge-barcode-section-margin-bottom) 0;
+    min-height: 80px;
+    z-index: 3;
 }
-.badge-footer {
-    width: 100%;
-    text-align: center;
-    font-size: 0.85em;
-    color: #555;
-    background: var(--badge-footer-bg);
-    padding: 6px 0 8px 0;
-    border-radius: 0 0 16px 16px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
+#badge-qrcode-img {
+    width: var(--badge-barcode-size);
+    height: var(--badge-barcode-size);
+    background: transparent;
+    border-radius: var(--badge-barcode-radius);
+    box-shadow: var(--badge-barcode-shadow);
+    display: block;
 }
 
-/* Badge disabled state */
 .badge-card[draggable="false"] {
     opacity: 0.5;
     cursor: not-allowed !important;
     filter: grayscale(0.6);
     transform: none !important;
 }
-
 .badge-card[draggable="false"]:hover {
     transform: none !important;
 }
 </style>
 
-
 <div class="badge-container">
   <div class="badge-card" id="badge" draggable="true" ondragstart="drag(event)">
-    <div class="badge-header">
-      <img src="/static/img/crew_cipher_logo.svg" alt="Crew Cipher Logo" style="height:56px; margin-bottom:4px;" />
+    <svg class="badge-svg-top" viewBox="0 0 300 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="300" height="150" rx="24" fill="var(--badge-header-bg-main)"/>
+      <path d="M0,150 Q150,40 300,150 L300,0 L0,0 Z" fill="var(--badge-header-bg-curve)"/>
+      <path d="M0,150 Q150,90 300,150" stroke="var(--badge-svg-stroke)" stroke-width="var(--badge-svg-stroke-width)" fill="none"/>
+    </svg>
+    <div class="badge-header-content">
+      <img src="/static/img/crew_cipher_logo.svg" alt="Crew Cipher Logo" class="badge-logo" />
     </div>
     <div class="badge-photo-section">
       <img src="/static/img/crew01.png" class="badge-photo" id="badge-img" alt="Crew Photo">
     </div>
     <div class="badge-info-section">
-      <div class="badge-name" id="badge-name"></div>
-      <div class="badge-role" id="badge-role"></div>
-      <div class="badge-id" id="badge-id"></div>
+      <div class="badge-name" id="badge-name">NAME</div>
+      <div class="badge-surname" id="badge-surname">SURNAME</div>
+      <div class="badge-role" id="badge-role">Director</div>
     </div>
     <div class="badge-barcode-section">
-      <img id="badge-qrcode-img" width="88" height="88" style="background:transparent;border-radius:4px;box-shadow:0 0 4px #5552;display:block;" alt="QR Code" />
+      <img id="badge-qrcode-img" alt="QR Code" />
     </div>
-    <div class="badge-footer"></div>
+    <svg class="badge-svg-bottom" viewBox="0 0 300 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 Q150,50 300,0 L300,50 L0,50 Z" fill="var(--badge-header-bg-main)"/>
+      <path d="M0,0 Q150,30 300,0" stroke="var(--badge-svg-bottom-stroke)" stroke-width="var(--badge-svg-stroke-width)" fill="none"/>
+    </svg>
   </div>
 </div>
-
 
 <script>
 // Badge component functionality
@@ -170,8 +251,9 @@ class BadgeComponent {
         this.element = document.getElementById('badge');
         this.img = document.getElementById('badge-img');
         this.name = document.getElementById('badge-name');
+        this.surname = document.getElementById('badge-surname');
         this.role = document.getElementById('badge-role');
-        this.id = document.getElementById('badge-id');
+        // Não precisa mais de this.id
         this.qrImg = document.getElementById('badge-qrcode-img');
         this.currentCode = '';
         this.dragDisabled = false;
@@ -180,14 +262,17 @@ class BadgeComponent {
     updateBadge(crewMember) {
         if (!crewMember) return;
         this.img.src = crewMember.img;
-        this.name.textContent = crewMember.name;
+        // Split name and surname if possible
+        if (crewMember.name) {
+            const parts = crewMember.name.split(' ');
+            this.name.textContent = parts[0] || '';
+            this.surname.textContent = parts.slice(1).join(' ') || '';
+        }
         this.role.textContent = crewMember.role;
-        this.id.textContent = 'ID: ' + crewMember.id;
-        
+        // Não exibe mais o ID
         // Reset drag state when updating badge
         this.enableDrag();
-        
-        // Fetch encrypted token and QR code
+        // Fetch encrypted token and QR code usando crewMember.id
         fetch(`/get_token/${crewMember.id}`)
             .then(r => {
                 if (!r.ok) throw new Error('Network response was not ok');
@@ -211,7 +296,6 @@ class BadgeComponent {
     getCurrentCode() {
         return this.currentCode;
     }
-    
     // Disable drag functionality
     disableDrag() {
         this.dragDisabled = true;
@@ -222,7 +306,6 @@ class BadgeComponent {
             this.element.title = 'Este tripulante já foi testado e falhou na verificação';
         }
     }
-    
     // Enable drag functionality
     enableDrag() {
         this.dragDisabled = false;
@@ -233,7 +316,6 @@ class BadgeComponent {
             this.element.title = '';
         }
     }
-    
     // Check if drag is disabled
     isDragDisabled() {
         return this.dragDisabled;
@@ -244,13 +326,11 @@ function drag(ev) {
         ev.preventDefault();
         return false;
     }
-    
     // Check if current badge drag is disabled
     if (window.badgeComponent && window.badgeComponent.isDragDisabled()) {
         ev.preventDefault();
         return false;
     }
-    
     ev.dataTransfer.setData("text", "badge");
 }
 window.badgeComponent = new BadgeComponent();
