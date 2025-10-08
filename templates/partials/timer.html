@@ -126,10 +126,17 @@
     text-shadow: var(--timer-text-shadow);
     backdrop-filter: var(--timer-blur);
     display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     align-self: center;
     flex-shrink: 0;
     border-left: var(--timer-border-left);
     border-right: var(--timer-border-right);
+}
+
+.game-timer.visible {
+    display: flex !important;
 }
 
 .game-timer::before {
@@ -367,13 +374,17 @@
         // Show timer component
         show() {
             if (this.container) {
-                this.container.style.display = 'block';
+                this.container.classList.add('visible');
+                this.container.style.display = 'flex';
+                this.container.style.visibility = 'visible';
+                this.container.style.opacity = '1';
             }
         }
         
         // Hide timer component
         hide() {
             if (this.container) {
+                this.container.classList.remove('visible');
                 this.container.style.display = 'none';
                 this.container.classList.remove('critical');
             }

@@ -7,3 +7,5 @@ __pycache__/
 # Ignora arquivos temporários do sistema
 .DS_Store
 Thumbs.db
+# Vercel
+.vercel

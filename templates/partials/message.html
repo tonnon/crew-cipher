@@ -1,51 +1,91 @@
 <style>
+:root {
+    --message-font-family: 'Montserrat', Verdana, Arial, sans-serif;
+    --message-container-font-family: Verdana, Arial, sans-serif;
+    --message-bg: #181c2b;
+    --message-radius: 10px;
+    --message-padding: 16px 22px 12px 22px;
+    --message-padding-success: 18px 24px 14px 24px;
+    --message-max-width: 90%;
+    --message-margin: 0 auto;
+    --message-margin-container: 40px 0;
+    --message-min-height: 32px;
+    --message-transition: background 0.5s, box-shadow 0.5s;
+    --message-word-wrap: break-word;
+    --message-text-align: center;
+    --message-text-shadow: none;
+    --message-display: inline-block;
+    
+    /* Success message colors */
+    --message-success-color: #00e0ff;
+    --message-success-border: 2px solid #00e0ff;
+    --message-success-shadow: 0 2px 16px #00e0ff22;
+    --message-success-font-size: 1.2em;
+    --message-success-animation: fadeInScale 1.2s cubic-bezier(.22,1,.36,1);
+    --message-success-bg-highlight: #00e0ff22;
+    --message-success-highlight-animation: highlightSuccessBg 1.2s;
+    
+    /* Error message colors */
+    --message-error-color: #ff003c;
+    --message-error-border: 2px solid #ff003c;
+    --message-error-shadow: 0 2px 16px #ff003c22;
+    --message-error-font-size: 1.1em;
+    --message-error-animation: fadeInScale 1.1s cubic-bezier(.22,1,.36,1);
+    --message-error-bg-highlight: #ff003c22;
+    --message-error-highlight-animation: highlightErrorBg 1.1s;
+    
+    /* Default message styles */
+    --message-default-font-size: 1.1em;
+    --message-default-font-weight: bold;
+}
+
 .message {
-    font-size: 1.1em;
-    font-weight: bold;
-    background: #181c2b;
-    border-radius: 10px;
-    padding: 16px 22px 12px 22px;
-    display: inline-block;
-    margin: 0 auto;
-    transition: background 0.5s, box-shadow 0.5s;
-    text-shadow: none;
-    text-align: center;
-    max-width: 90%;
-    word-wrap: break-word;
-    font-family: 'Montserrat', Verdana, Arial, sans-serif;
+    font-size: var(--message-default-font-size);
+    font-weight: var(--message-default-font-weight);
+    background: var(--message-bg);
+    border-radius: var(--message-radius);
+    padding: var(--message-padding);
+    display: var(--message-display);
+    margin: var(--message-margin);
+    transition: var(--message-transition);
+    text-shadow: var(--message-text-shadow);
+    text-align: var(--message-text-align);
+    max-width: var(--message-max-width);
+    word-wrap: var(--message-word-wrap);
+    font-family: var(--message-font-family);
 }
 
 .message.success-message {
-    color: #00e0ff;
-    font-size: 1.2em;
-    border: 2px solid #00e0ff;
-    box-shadow: 0 2px 16px #00e0ff22;
-    padding: 18px 24px 14px 24px;
-    animation: fadeInScale 1.2s cubic-bezier(.22,1,.36,1);
+    color: var(--message-success-color);
+    font-size: var(--message-success-font-size);
+    border: var(--message-success-border);
+    box-shadow: var(--message-success-shadow);
+    padding: var(--message-padding-success);
+    animation: var(--message-success-animation);
 }
 
 .message.error-message {
-    color: #ff003c;
-    font-size: 1.1em;
-    border: 2px solid #ff003c;
-    box-shadow: 0 2px 16px #ff003c22;
-    padding: 16px 22px 12px 22px;
-    animation: fadeInScale 1.1s cubic-bezier(.22,1,.36,1);
+    color: var(--message-error-color);
+    font-size: var(--message-error-font-size);
+    border: var(--message-error-border);
+    box-shadow: var(--message-error-shadow);
+    padding: var(--message-padding);
+    animation: var(--message-error-animation);
 }
 
 .message-container {
-    margin: 40px 0;
-    text-align: center;
-    min-height: 32px;
-    font-family: Verdana, Arial, sans-serif;
+    margin: var(--message-margin-container);
+    text-align: var(--message-text-align);
+    min-height: var(--message-min-height);
+    font-family: var(--message-container-font-family);
 }
 
 .message-container.highlight-success {
-    animation: highlightSuccessBg 1.2s;
+    animation: var(--message-success-highlight-animation);
 }
 
 .message-container.highlight-error {
-    animation: highlightErrorBg 1.1s;
+    animation: var(--message-error-highlight-animation);
 }
 
 @keyframes fadeInScale {
@@ -55,12 +95,12 @@
 }
 
 @keyframes highlightSuccessBg {
-    0% { background: #00e0ff22; }
+    0% { background: var(--message-success-bg-highlight); }
     100% { background: none; }
 }
 
 @keyframes highlightErrorBg {
-    0% { background: #ff003c22; }
+    0% { background: var(--message-error-bg-highlight); }
     100% { background: none; }
 }
 </style>
@@ -74,23 +114,24 @@
 class MessageComponent {
     constructor() {
         this.container = document.getElementById('message-container');
+        this.animationDurations = {
+            success: 1200,
+            error: 900
+        };
     }
     
     // Show message with type (success or error)
     showMessage(message, type) {
-        if (!this.container) return;
+        if (!this.container || !message || !type) return;
         
-        const cssClass = type === 'success' ? 'success-message' : 'error-message';
-        const highlightClass = type === 'success' ? 'highlight-success' : 'highlight-error';
+        const cssClass = this._getMessageClass(type);
+        const highlightClass = this._getHighlightClass(type);
         
         this.container.innerHTML = `<div class="message ${cssClass}">${message}</div>`;
         this.container.classList.add(highlightClass);
         
         // Auto-remove highlight after animation
-        const duration = type === 'success' ? 1200 : 900;
-        setTimeout(() => {
-            this.container.classList.remove(highlightClass);
-        }, duration);
+        this._removeHighlightAfterAnimation(highlightClass, type);
     }
     
     // Clear message
@@ -99,6 +140,26 @@ class MessageComponent {
             this.container.innerHTML = '';
             this.container.classList.remove('highlight-success', 'highlight-error');
         }
+    }
+    
+    // Get message CSS class based on type
+    _getMessageClass(type) {
+        return type === 'success' ? 'success-message' : 'error-message';
+    }
+    
+    // Get highlight CSS class based on type
+    _getHighlightClass(type) {
+        return type === 'success' ? 'highlight-success' : 'highlight-error';
+    }
+    
+    // Remove highlight class after animation duration
+    _removeHighlightAfterAnimation(highlightClass, type) {
+        const duration = this.animationDurations[type] || this.animationDurations.error;
+        setTimeout(() => {
+            if (this.container) {
+                this.container.classList.remove(highlightClass);
+            }
+        }, duration);
     }
 }
 

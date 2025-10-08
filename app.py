@@ -93,26 +93,26 @@ BASE_CREW = [
         {"img": "/static/img/crew05.png", "role": "Técnica de Laboratório"},
         {"img": "/static/img/crew06.png", "role": "Timoneiro"},
         {"img": "/static/img/crew07.png", "role": "Cozinheira"},
-        {"img": "/static/img/crew01.png", "role": "Bioquímico"},
-        {"img": "/static/img/crew02.png", "role": "Supervisora de Convés"},
-        {"img": "/static/img/crew03.png", "role": "Imediato"},
-        {"img": "/static/img/crew04.png", "role": "Comissária"},
-        {"img": "/static/img/crew05.png", "role": "Especialista em Armas"},
-        {"img": "/static/img/crew06.png", "role": "Materiais Perigosos"},
-        {"img": "/static/img/crew07.png", "role": "Mecânico"},
-        {"img": "/static/img/crew01.png", "role": "Engenheira Chefe"},
-        {"img": "/static/img/crew02.png", "role": "Eletricista"},
-        {"img": "/static/img/crew03.png", "role": "Assistente de Engenharia"},
-        {"img": "/static/img/crew04.png", "role": "Operadora de Rádio"},
-        {"img": "/static/img/crew05.png", "role": "Criptógrafo"},
-        {"img": "/static/img/crew06.png", "role": "Capitã"},
-        {"img": "/static/img/crew07.png", "role": "Oficial de Comunicações"},
-        {"img": "/static/img/crew01.png", "role": "Oficial de Navegação"},
-        {"img": "/static/img/crew02.png", "role": "Oficial de Segurança"},
-        {"img": "/static/img/crew03.png", "role": "Oficial de Ciências"},
-        {"img": "/static/img/crew04.png", "role": "Oficial de Manutenção"},
-        {"img": "/static/img/crew05.png", "role": "Oficial de Suprimentos"},
-        {"img": "/static/img/crew06.png", "role": "Oficial de Logística"},
+        {"img": "/static/img/crew08.png", "role": "Bioquímico"},
+        {"img": "/static/img/crew09.png", "role": "Supervisora de Convés"},
+        {"img": "/static/img/crew10.png", "role": "Imediato"},
+        {"img": "/static/img/crew11.png", "role": "Comissária"},
+        {"img": "/static/img/crew12.png", "role": "Especialista em Armas"},
+        {"img": "/static/img/crew13.png", "role": "Materiais Perigosos"},
+        {"img": "/static/img/crew14.png", "role": "Mecânico"},
+        {"img": "/static/img/crew15.png", "role": "Engenheira Chefe"},
+        {"img": "/static/img/crew16.png", "role": "Eletricista"},
+        {"img": "/static/img/crew17.png", "role": "Assistente de Engenharia"},
+        {"img": "/static/img/crew18.png", "role": "Operadora de Rádio"},
+        {"img": "/static/img/crew19.png", "role": "Criptógrafo"},
+        {"img": "/static/img/crew20.png", "role": "Capitã"},
+        {"img": "/static/img/crew21.png", "role": "Oficial de Comunicações"},
+        {"img": "/static/img/crew22.png", "role": "Oficial de Navegação"},
+        {"img": "/static/img/crew23.png", "role": "Oficial de Segurança"},
+        {"img": "/static/img/crew24.png", "role": "Oficial de Ciências"},
+        {"img": "/static/img/crew25.png", "role": "Oficial de Manutenção"},
+        {"img": "/static/img/crew26.png", "role": "Oficial de Suprimentos"},
+        {"img": "/static/img/crew27.png", "role": "Oficial de Logística"},
     ])
 ]
 
@@ -295,6 +295,9 @@ def get_token(crew_id):
         encrypted = encrypt_message(fake_code)
     qr_base64 = generate_qr_base64(encrypted)
     return jsonify({"encrypted": encrypted, "qr_base64": qr_base64})
+
+# Exportar app para Vercel
+app = app
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

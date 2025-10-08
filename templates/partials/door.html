@@ -1,343 +1,990 @@
 <style>
-.door {
-    width: 220px;
-    height: 220px;
-    background: #23263a;
-    border: 8px solid #bba98c;
-    border-radius: 18px;
-    box-shadow: 0 4px 32px #000b, 0 0 0 8px #23263a inset;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    clip-path: polygon(
-        12% 0%, 88% 0%, 100% 12%, 100% 88%,
-        88% 100%, 12% 100%, 0% 88%, 0% 12%
-    );
-    z-index: 2;
-}
-.door-inner {
-    position: absolute;
-    inset: 12px;
-    background: linear-gradient(135deg, #23263a 70%, #2d2f3a 100%);
-    border-radius: 12px;
-    box-shadow: 0 0 0 2px #444a, 0 0 24px #0008 inset;
-    z-index: 1;
-    clip-path: polygon(
-        12% 0%, 88% 0%, 100% 12%, 100% 88%,
-        88% 100%, 12% 100%, 0% 88%, 0% 12%
-    );
-}
-.door-detail {
-    position: absolute;
-    background: #181c2b;
-    border-radius: 4px;
-    box-shadow: 0 0 8px #000a inset;
-}
-.door-detail.vert {
-    width: 16px;
-    height: 120px;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) rotate(0deg);
-}
-.door-detail.diag1 {
-    width: 14px;
-    height: 90px;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) rotate(45deg);
-}
-.door-detail.diag2 {
-    width: 14px;
-    height: 90px;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) rotate(-45deg);
-}
-.door-panel {
-    position: absolute;
-    right: 24px;
-    top: 38px;
-    width: 38px;
-    height: 38px;
-    background: #23263a;
-    border: 2px solid #444;
-    border-radius: 6px;
-    box-shadow: 0 0 8px #0f08, 0 0 0 2px #222 inset;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-}
-.door-panel-light {
-    width: 18px;
-    height: 18px;
-    background: #1a3;
-    border-radius: 4px;
-    box-shadow: 0 0 12px 2px #0f08, 0 0 4px #8f8 inset;
-    border: 2px solid #3f6;
-}
-.door-dot {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    background: #1f5;
-    border-radius: 50%;
-    box-shadow: 0 0 8px 2px #0f08;
-    z-index: 3;
-}
-.door-dot.dot1 { left: 32px; top: 32px; }
-.door-dot.dot2 { right: 32px; top: 32px; }
-.door-dot.dot3 { left: 32px; bottom: 32px; }
-.door-dot.dot4 { right: 32px; bottom: 32px; }
-.door-section-label {
-    position: absolute;
-    left: 50%;
-    bottom: 18px;
-    transform: translateX(-50%);
-    font-size: 13px;
-    font-family: 'Montserrat', Verdana, Arial, sans-serif;
-    color: #bba98c;
-    text-shadow: 0 2px 8px #000a;
-    z-index: 4;
-    letter-spacing: 1px;
-    text-align: center;
+:root {
+    --door-width: 420px;
+    --door-height: 520px;
+    --door-platform-height: 110px;
+    
+    /* Frame colors */
+    --frame-light: #d9dde3;
+    --frame-mid: #b6bbc4;
+    --frame-mid-alt: #cfd4dc;
+    --frame-dark: #2d313c;
+    --frame-darker: #484c56;
+    --frame-shadow: rgba(8, 10, 16, 0.65);
+    
+    /* Door surface colors */
+    --door-surface: #d8dade;
+    --door-surface-alt: #c5c7ce;
+    --door-surface-dark: #9da0aa;
+    --door-edge: #141821;
+    --door-edge-alt: rgba(14, 16, 24, 0.85);
+    
+    /* Status colors */
+    --amber: #f59f2d;
+    --amber-light: #ffeab8;
+    --amber-dark: #c7690c;
+    --blue: #3bc7ff;
+    --blue-dark: rgba(22, 70, 110, 0.5);
+    --green: #56ff9f;
+    --green-light: #d6ffe4;
+    --green-dark: #1f9d5b;
+    --red: #ff5252;
+    --red-light: rgba(255, 160, 140, 1);
+    --red-dark: rgba(188, 10, 10, 1);
+    
+    /* Console colors */
+    --console-bg-start: #3d4047;
+    --console-bg-end: #1d2028;
+    --console-border: #161920;
+    --console-text: #1a1206;
+    
+    /* Module colors */
+    --module-bg-start: #31343c;
+    --module-bg-end: #1a1d25;
+    --module-border: rgba(20, 24, 32, 0.85);
+    --module-border-alt: rgba(32, 36, 46, 0.9);
+    
+    /* Screen colors */
+    --screen-blue-center: rgba(59, 199, 255, 0.95);
+    --screen-blue-mid: rgba(22, 70, 110, 0.5);
+    --screen-blue-edge: rgba(10, 16, 28, 0.92);
+    
+    /* Access screen colors */
+    --access-amber-center: rgba(255, 140, 40, 0.95);
+    --access-amber-mid: rgba(122, 39, 0, 0.92);
+    --access-amber-edge: rgba(24, 6, 0, 0.95);
+    --access-border: rgba(42, 46, 58, 0.9);
+    --access-text: rgba(255, 230, 200, 0.85);
+    
+    /* Access states */
+    --access-locked-center: rgba(255, 110, 24, 0.95);
+    --access-locked-mid: rgba(110, 26, 0, 0.92);
+    --access-locked-edge: rgba(30, 8, 0, 0.95);
+    
+    --access-unlocked-center: rgba(90, 255, 180, 0.95);
+    --access-unlocked-mid: rgba(12, 148, 78, 0.85);
+    --access-unlocked-edge: rgba(0, 44, 20, 0.92);
+    
+    --access-error-center: rgba(255, 90, 70, 0.95);
+    --access-error-mid: rgba(140, 0, 0, 0.92);
+    --access-error-edge: rgba(40, 0, 0, 0.98);
+    
+    /* Button colors */
+    --button-bg-start: #2a2d36;
+    --button-bg-end: #181a21;
+    --button-border: rgba(36, 40, 52, 0.85);
+    --button-light-start: rgba(255, 140, 40, 0.95);
+    --button-light-end: rgba(204, 64, 0, 0.9);
+    
+    /* Light colors */
+    --light-amber-start: rgba(255, 145, 45, 1);
+    --light-amber-end: rgba(204, 74, 12, 1);
+    
+    /* Core colors */
+    --core-bg-start: rgba(12, 16, 24, 0.96);
+    --core-bg-end: rgba(6, 9, 16, 0.98);
+    --core-border: rgba(16, 18, 24, 0.9);
+    
+    /* Corridor colors */
+    --corridor-bg-center: rgba(255, 208, 130, 0.28);
+    --corridor-bg-mid: rgba(20, 24, 36, 0.92);
+    --corridor-bg-edge: rgba(4, 6, 12, 0.98);
+    --corridor-stripe-light: rgba(18, 22, 36, 0.85);
+    --corridor-stripe-dark: rgba(6, 8, 14, 0.95);
+    
+    /* Wall colors */
+    --wall-bg-start: rgba(62, 68, 84, 0.95);
+    --wall-bg-mid: rgba(24, 26, 32, 0.98);
+    --wall-bg-end: rgba(8, 9, 14, 1);
+    
+    /* Platform colors */
+    --platform-stripe-light: rgba(120, 124, 134, 0.5);
+    --platform-stripe-dark: rgba(32, 36, 46, 0.8);
+    
+    /* Groove colors */
+    --groove-start: rgba(8, 10, 16, 0.95);
+    --groove-mid: rgba(44, 50, 60, 0.6);
+    --groove-end: rgba(6, 8, 12, 1);
+    
+    /* Chevron colors */
+    --chevron-light: rgba(22, 26, 36, 0.65);
+    --chevron-dark: rgba(10, 12, 18, 0.9);
+    
+    /* Text colors */
+    --text-door: rgba(30, 36, 46, 0.85);
+    --text-door-alt: rgba(20, 24, 32, 0.85);
+    
+    /* Overlay colors */
+    --overlay-light: rgba(22, 28, 36, 0.05);
+    --overlay-dark: rgba(22, 28, 36, 0.08);
+    --overlay-line: rgba(28, 32, 40, 0.45);
 }
 
-.door-half {
+.door-wrapper *,
+.door-wrapper *::before,
+.door-wrapper *::after {
+    box-sizing: border-box;
+}
+
+.door-wrapper {
+    width: var(--door-width);
+    height: calc(var(--door-height) + var(--door-platform-height));
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    filter: drop-shadow(0 28px 48px rgba(0, 0, 0, 0.6));
+    transition: filter 0.3s ease;
+}
+
+
+.door-frame {
     position: absolute;
     top: 0;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(160deg, #444 0%, #222 100%);
-    z-index: 1;
-    transition: transform 1s cubic-bezier(.77,0,.18,1);
-    border: none;
+    width: 100%;
+    height: var(--door-height);
+    background: linear-gradient(180deg, var(--frame-light) 0%, #cfd4dc 30%, var(--frame-mid) 68%, #484c56 100%);
+    border-radius: 34px;
+    border: 4px solid var(--frame-dark);
+    box-shadow: inset 0 0 44px rgba(0, 0, 0, 0.25), inset 0 24px 40px rgba(255, 255, 255, 0.16), 0 26px 46px var(--frame-shadow);
+    overflow: hidden;
+}
+
+.door-frame::before {
+    content: '';
+    position: absolute;
+    inset: 20px;
+    border-radius: 26px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(0, 0, 0, 0.14) 85%);
+    pointer-events: none;
+}
+
+.door-frame::after {
+    content: '';
+    position: absolute;
+    inset: 30px;
+    border-radius: 20px;
+    box-shadow: inset 0 0 28px rgba(0, 0, 0, 0.35);
+}
+
+.door-top-console {
+    position: absolute;
+    top: 26px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 74%;
+    background: linear-gradient(180deg, #3d4047 0%, #1d2028 100%);
+    border-radius: 16px;
+    border: 2px solid #161920;
+    padding: 12px 20px 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45), inset 0 -6px 16px rgba(0, 0, 0, 0.6);
+    display: grid;
+    row-gap: 10px;
+}
+
+.door-top-label {
+    justify-self: center;
+    padding: 4px 22px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, var(--amber) 0%, var(--amber-dark) 100%);
+    color: #1a1206;
+    font-family: 'Roboto Condensed', 'Segoe UI', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.32), 0 0 22px rgba(255, 145, 40, 0.55);
+}
+
+.door-top-lights {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+}
+
+.door-top-lights span {
+    height: 18px;
+    border-radius: 7px;
+    background: linear-gradient(180deg, #ffeab8 0%, var(--amber) 55%, var(--amber-dark) 100%);
+    box-shadow: 0 0 14px rgba(255, 150, 50, 0.75), inset 0 -4px 6px rgba(0, 0, 0, 0.45);
+    animation: beaconPulse 1.4s ease-in-out infinite;
+}
+
+.door-top-lights span:nth-child(2) { animation-delay: 0.2s; }
+.door-top-lights span:nth-child(3) { animation-delay: 0.4s; }
+.door-top-lights span:nth-child(4) { animation-delay: 0.6s; }
+.door-top-lights span:nth-child(5) { animation-delay: 0.8s; }
+.door-top-lights span:nth-child(6) { animation-delay: 1.0s; }
+
+.door-side {
+    position: absolute;
+    top: 128px;
+    width: 112px;
+    height: 296px;
+    background: linear-gradient(180deg, #31343c 0%, #1a1d25 100%);
+    border-radius: 20px;
+    border: 2px solid rgba(20, 24, 32, 0.85);
+    box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.6), 0 12px 34px rgba(0, 0, 0, 0.55);
+    padding: 18px 16px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    box-shadow: 1px 0 8px #8884 inset;
+    justify-content: space-between;
 }
 
-.door-left {
-    left: 0;
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-}
+.door-side.left { left: 30px; }
+.door-side.right { right: 30px; }
 
-.door-right {
-    right: 0;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    box-shadow: -1px 0 8px #8884 inset;
-}
 
-.door .window {
-    position: absolute;
-    left: 50%;
-    top: 32px;
-    transform: translateX(-50%);
-    width: 70px;
-    height: 22px;
-    background: #222;
-    border: 2px solid #666;
-    border-radius: 4px;
-    box-shadow: inset 0 0 8px #0ff4;
+.door-side .module-lights {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.door-side .module-lights span {
+    width: 22px;
+    height: 22px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: linear-gradient(180deg, rgba(255, 145, 45, 1) 0%, rgba(204, 74, 12, 1) 80%);
+    box-shadow: 0 0 18px rgba(255, 130, 30, 0.8);
+    animation: sideBlink 1.8s ease-in-out infinite;
+}
+
+.door-side .module-lights span:nth-child(2) { animation-delay: 0.3s; }
+.door-side .module-lights span:nth-child(3) { animation-delay: 0.6s; }
+.door-side .module-lights span:nth-child(4) { animation-delay: 0.9s; }
+
+
+.door-core {
+    position: absolute;
+    top: 96px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 64%;
+    height: calc(var(--door-height) - 190px);
+    border-radius: 18px;
+    border: 2px solid rgba(16, 18, 24, 0.9);
+    background: linear-gradient(180deg, rgba(12, 16, 24, 0.96) 0%, rgba(6, 9, 16, 0.98) 100%);
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.75);
+    overflow: hidden;
+}
+
+.door-corridor {
+    position: absolute;
+    inset: 10px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 14%, rgba(255, 208, 130, 0.28) 0%, rgba(20, 24, 36, 0.92) 38%, rgba(4, 6, 12, 0.98) 100%);
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.65);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    z-index: 0;
+}
+
+.door-corridor-layer {
+    position: absolute;
+    inset: -60% -50% -70% -50%;
+    transform-origin: center top;
+    background: repeating-linear-gradient(90deg, rgba(18, 22, 36, 0.85) 0 26px, rgba(6, 8, 14, 0.95) 26px 52px);
+    filter: blur(0.2px);
+    opacity: 0.75;
+}
+
+.corridor-floor {
+    transform: perspective(880px) rotateX(70deg) translateY(8%);
+    animation: corridorFloorScroll 6s linear infinite;
+    z-index: 1;
+}
+
+.corridor-floor::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(255, 210, 120, 0.14), transparent 70%);
+}
+
+.corridor-ceiling {
+    transform: perspective(880px) rotateX(-74deg) translateY(-6%);
+    background: repeating-linear-gradient(90deg, rgba(22, 26, 40, 0.75) 0 22px, rgba(5, 6, 10, 0.9) 22px 44px);
+    animation: corridorCeilingGlow 5.2s ease-in-out infinite alternate;
+    z-index: 1;
+}
+
+.corridor-ceiling::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255, 170, 60, 0.2), transparent 70%);
+}
+
+.corridor-walls {
+    position: absolute;
+    inset: -12% -28% -12% -28%;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
     z-index: 2;
 }
 
-.door .window-inner {
-    width: 60px;
-    height: 10px;
-    background: linear-gradient(90deg, #0ff4, #222 60%);
+.corridor-wall {
+    position: relative;
+    width: 46%;
+    background: linear-gradient(180deg, rgba(62, 68, 84, 0.95) 0%, rgba(24, 26, 32, 0.98) 65%, rgba(8, 9, 14, 1) 100%);
+    box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.48);
+    overflow: hidden;
+    opacity: 0.95;
+}
+
+.corridor-wall::after {
+    content: '';
+    position: absolute;
+    inset: -10% -12% -10% -12%;
+    background: repeating-linear-gradient(180deg, rgba(255, 185, 90, 0.2) 0 14px, rgba(0, 0, 0, 0) 14px 28px);
+    opacity: 0.35;
+    animation: corridorWallScan 3.4s linear infinite;
+}
+
+.corridor-wall-left {
+    transform: perspective(900px) rotateY(58deg);
+    box-shadow: 12px 0 28px rgba(0, 0, 0, 0.6);
+}
+
+.corridor-wall-right {
+    transform: perspective(900px) rotateY(-58deg);
+    box-shadow: -12px 0 28px rgba(0, 0, 0, 0.6);
+}
+
+.corridor-light-columns {
+    position: absolute;
+    inset: -20% 10% -40% 10%;
+    display: flex;
+    justify-content: space-between;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.corridor-light-column {
+    position: relative;
+    width: 12px;
+    background: linear-gradient(180deg, rgba(255, 180, 90, 0.4), rgba(12, 16, 24, 0.8));
+    filter: blur(0.4px);
+    animation: corridorLightColumn 2.8s ease-in-out infinite;
+}
+
+.corridor-light-column::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255, 210, 130, 0.55), transparent 65%);
+    mix-blend-mode: screen;
+}
+
+.corridor-light-column:nth-child(2) {
+    animation-delay: 0.6s;
+}
+
+.corridor-light-column:nth-child(3) {
+    animation-delay: 1.2s;
+}
+
+.corridor-haze {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 70%, rgba(255, 185, 90, 0.2) 0%, rgba(18, 22, 34, 0.85) 55%, rgba(6, 9, 16, 0.95) 100%);
+    mix-blend-mode: screen;
     opacity: 0.3;
+    animation: corridorHazePulse 4.8s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 4;
+}
+
+.corridor-light-beam {
+    position: absolute;
+    left: 18%;
+    right: 18%;
+    height: 10px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, transparent, rgba(255, 198, 120, 0.75), transparent);
+    opacity: 0;
+    filter: blur(0.6px);
+    animation: corridorBeamPulse 2.6s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.corridor-light-top {
+    top: 14%;
+}
+
+.corridor-light-bottom {
+    bottom: 16%;
+    animation-delay: 1.3s;
+}
+
+.corridor-horizon {
+    position: absolute;
+    top: 12%;
+    left: 50%;
+    transform: translateX(-50%) scale(1.05);
+    width: 36%;
+    height: 24%;
+    border-radius: 40% 40% 50% 50%;
+    background: radial-gradient(circle at center, rgba(255, 228, 180, 0.6) 0%, rgba(255, 180, 70, 0.25) 40%, rgba(12, 16, 24, 0) 70%);
+    filter: blur(1.2px);
+    animation: corridorHorizonPulse 3.6s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 6;
+}
+
+.corridor-wall {
+    position: absolute;
+    top: -14%;
+    bottom: -14%;
+    width: 52%;
+    background: linear-gradient(180deg, rgba(60, 64, 76, 0.95) 0%, rgba(24, 26, 32, 0.98) 65%, rgba(8, 9, 14, 1) 100%);
+    box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    opacity: 0.9;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.corridor-wall::after {
+    content: '';
+    position: absolute;
+    inset: -12%;
+    background: repeating-linear-gradient(180deg, rgba(255, 185, 90, 0.22) 0 14px, rgba(0, 0, 0, 0) 14px 32px);
+    opacity: 0.35;
+    animation: corridorWallScan 3.2s linear infinite;
+}
+
+.corridor-wall-left {
+    left: -30%;
+    transform: perspective(820px) rotateY(62deg);
+    box-shadow: 12px 0 28px rgba(0, 0, 0, 0.55);
+}
+
+.corridor-wall-right {
+    right: -30%;
+    transform: perspective(820px) rotateY(-62deg);
+    box-shadow: -12px 0 28px rgba(0, 0, 0, 0.55);
+}
+
+.corridor-haze {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 70%, rgba(255, 185, 90, 0.2) 0%, rgba(18, 22, 34, 0.85) 55%, rgba(6, 9, 16, 0.95) 100%);
+    mix-blend-mode: screen;
+    opacity: 0.3;
+    animation: corridorHazePulse 4.8s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.corridor-light-beam {
+    position: absolute;
+    left: 18%;
+    right: 18%;
+    height: 10px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, transparent, rgba(255, 198, 120, 0.75), transparent);
+    opacity: 0;
+    filter: blur(0.6px);
+    animation: corridorBeamPulse 2.6s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 4;
+}
+
+.corridor-light-top {
+    top: 14%;
+}
+
+.corridor-light-bottom {
+    bottom: 16%;
+    animation-delay: 1.3s;
+}
+
+.corridor-horizon {
+    position: absolute;
+    top: 12%;
+    left: 50%;
+    transform: translateX(-50%) scale(1);
+    width: 38%;
+    height: 26%;
+    border-radius: 40% 40% 50% 50%;
+    background: radial-gradient(circle at center, rgba(255, 228, 180, 0.6) 0%, rgba(255, 180, 70, 0.25) 40%, rgba(12, 16, 24, 0) 70%);
+    filter: blur(1px);
+    animation: corridorHorizonPulse 3.6s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.door-leaf {
+    position: absolute;
+    top: 8px;
+    bottom: 12px;
+    width: 50%;
+    background: linear-gradient(180deg, var(--door-surface) 0%, var(--door-surface-alt) 45%, #9da0aa 100%);
+    border-radius: 12px;
+    border: 2px solid rgba(14, 16, 24, 0.85);
+    box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.35);
+    transition: transform 1.2s cubic-bezier(0.77, 0, 0.2, 1);
+    overflow: hidden;
+    z-index: 2;
+}
+
+.door-leaf-left { left: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.door-leaf-right { right: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; }
+
+.door-sector-label {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Roboto Condensed', 'Segoe UI', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: rgba(30, 36, 46, 0.4);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    z-index: 3;
+}
+
+.door-sector-label.left {
+    left: 25%;
+    transform: translate(-50%, -50%);
+}
+
+.door-sector-label.right {
+    right: 25%;
+    transform: translate(50%, -50%);
+}
+
+.qr-reader {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 80px;
+    background: linear-gradient(135deg, #2a2d35 0%, #1a1d25 100%);
+    border-radius: 6px;
+    border: 2px solid #3a3d45;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 10;
+}
+
+.qr-reader-screen {
+    width: 100%;
+    height: 38px;
+    background: linear-gradient(135deg, #1ec8ff 0%, #0b87d6 100%);
+    border-radius: 4px;
+    border: 1px solid #1a1d25;
+    box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(30, 200, 255, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.qr-reader-screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent 0 1px, rgba(0, 0, 0, 0.03) 1px 2px);
+}
+
+.qr-icon {
+    width: 24px;
+    height: 24px;
+    background: white;
+    border-radius: 3px;
+    padding: 3px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 1px;
+    z-index: 1;
+}
+
+.qr-icon span {
+    background: #00a8ff;
     border-radius: 2px;
 }
 
-.door .red-stripe {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 4px;
-    height: 100px;
-    background: #900;
-    z-index: 2;
+.qr-icon span:nth-child(1),
+.qr-icon span:nth-child(3),
+.qr-icon span:nth-child(7),
+.qr-icon span:nth-child(9) {
+    background: white;
+    border: 1px solid #00a8ff;
 }
 
-.door .section-label {
-    position: absolute;
-    left: 50%;
-    top: calc(50% + 40px);
-    transform: translateX(-50%);
-    font-size: 12px;
-    font-weight: bold;
-    color: #fff;
+.qr-reader-label {
     text-align: center;
-    z-index: 2;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 6px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
 }
 
-.door .center-lock {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 48px;
-    height: 48px;
+.qr-reader-indicator {
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(135deg, #2a2d35 0%, #1a1d25 100%);
+    border: 1px solid #3a3d45;
+    border-radius: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.1);
 }
 
-.door .lock-circle {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: #bbb;
-    position: relative;
-}
-
-.door .center-stripe {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+.qr-reader-indicator::after {
+    content: '';
     width: 4px;
-    height: 100%;
-    background: #900;
+    height: 4px;
+    background: #ff6b6b;
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(255, 107, 107, 0.6);
+    animation: qrBlink 1.5s ease-in-out infinite;
 }
 
-.door.open .door-left {
-    transform: translateX(-110%);
+@keyframes qrBlink {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
 }
 
-.door.open .door-right {
-    transform: translateX(110%);
-}
 
-.door-bg-corridor {
+.door-leaf-overlay {
     position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(22, 28, 36, 0.05), rgba(22, 28, 36, 0.08));
     pointer-events: none;
-    opacity: 0;
-    background:
-        repeating-linear-gradient(90deg, #222 0 8px, #444 8px 32px),
-        repeating-linear-gradient(180deg, #222 0 16px, #333 16px 32px),
-        radial-gradient(ellipse at center, #888 0%, #222 60%, #000 100%);
-    background-blend-mode: multiply;
-    filter: brightness(0.7) blur(0.5px);
-    border-radius: 8px;
-    box-shadow: 0 0 32px #000b inset;
-    animation: corridor-move 3s linear infinite;
-    transition: opacity 0.5s;
 }
 
-.door.open .door-bg-corridor {
+.door-leaf-overlay::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(28, 32, 40, 0.45), transparent);
+}
+
+.door-center-groove {
+    position: absolute;
+    top: 10px;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    background: linear-gradient(180deg, rgba(8, 10, 16, 0.95) 0%, rgba(44, 50, 60, 0.6) 50%, rgba(6, 8, 12, 1) 100%);
+    border-radius: 6px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+    z-index: 1;
+}
+
+
+.door-chevrons {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 12px;
+    opacity: 0.35;
+}
+
+.door-chevrons span {
+    width: 28px;
+    height: 18px;
+    background: linear-gradient(120deg, rgba(22, 26, 36, 0.65), rgba(10, 12, 18, 0.9));
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+.door-wrapper.open .door-leaf-left {
+    transform: translateX(-102%);
+}
+
+.door-wrapper.open .door-leaf-right {
+    transform: translateX(102%);
+}
+
+.door-wrapper.open .door-corridor {
     opacity: 1;
 }
 
-@keyframes corridor-move {
-    0% { background-position: 0 0, 0 0, 0 0; }
-    100% { background-position: 64px 128px, 0 64px, 0 0; }
+.door-wrapper.open .door-top-lights span {
+    background: linear-gradient(180deg, #d6ffe4 0%, var(--green) 55%, #1f9d5b 100%);
+    box-shadow: 0 0 16px rgba(86, 255, 159, 0.75);
 }
 
-@keyframes shake {
-    0% { transform: translate(0px, 0px) rotate(0deg); }
-    20% { transform: translate(-2px, 2px) rotate(-1deg); }
-    40% { transform: translate(-2px, -2px) rotate(1deg); }
-    60% { transform: translate(2px, 2px) rotate(0deg); }
-    80% { transform: translate(2px, -2px) rotate(1deg); }
-    100% { transform: translate(0px, 0px) rotate(0deg); }
+.door-wrapper.success .door-top-lights span {
+    background: linear-gradient(180deg, #d6ffe4 0%, var(--green) 55%, #1f9d5b 100%) !important;
+    box-shadow: 0 0 16px rgba(86, 255, 159, 0.75) !important;
+    animation: successPulse 0.8s ease-in-out infinite !important;
 }
 
-@keyframes success-shake {
-    0% { transform: scale(1) rotate(0deg); }
-    20% { transform: scale(1.04) rotate(-2deg); }
-    40% { transform: scale(1.08) rotate(2deg); }
-    60% { transform: scale(1.04) rotate(-1deg); }
-    80% { transform: scale(1.02) rotate(1deg); }
-    100% { transform: scale(1) rotate(0deg); }
+@keyframes successPulse {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.8); }
 }
 
-.door.alarm {
-    animation: shake 0.15s infinite;
-    box-shadow: 0 0 24px 8px #ff0000, 0 4px 16px #000a;
-    border-color: #ff0000;
+
+.door-wrapper.error {
+    animation: doorShake 0.55s ease;
+    filter: none;
+}
+
+.door-wrapper.alarm {
+    box-shadow: none;
+}
+
+.door-wrapper.alarm .door-top-lights span,
+.door-wrapper.error .door-top-lights span {
+    background: linear-gradient(180deg, rgba(255, 160, 140, 1) 0%, rgba(188, 10, 10, 1) 80%);
+    box-shadow: 0 0 18px rgba(255, 70, 60, 0.75);
+    animation: alarmFlash 0.55s ease-in-out infinite;
+}
+
+
+@keyframes beaconPulse {
+    0% { filter: brightness(0.85); }
+    50% { filter: brightness(1.6); }
+    100% { filter: brightness(0.95); }
+}
+
+@keyframes sideBlink {
+    0%, 100% { opacity: 0.45; filter: saturate(0.9); }
+    50% { opacity: 1; filter: saturate(1.4); }
+}
+
+@keyframes scannerSlide {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes corridorDrift {
+    0% { background-position: 0 0, 0 0; }
+    100% { background-position: 140px 280px, 0 120px; }
+}
+
+@keyframes alarmFlash {
+    0%, 100% { filter: brightness(0.9); }
+    50% { filter: brightness(1.8); }
+}
+
+@keyframes doorShake {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-6px) rotate(-0.6deg); }
+    40% { transform: translateX(6px) rotate(0.6deg); }
+    60% { transform: translateX(-4px) rotate(-0.3deg); }
+    80% { transform: translateX(4px) rotate(0.3deg); }
+    100% { transform: translateX(0); }
 }
 </style>
 
-<div class="door" id="door" ondrop="drop(event)" ondragover="allowDrop(event)">
-    <div class="door-inner"></div>
-    <div class="door-detail vert"></div>
-    <div class="door-detail diag1"></div>
-    <div class="door-detail diag2"></div>
-    <div class="door-panel">
-        <div class="door-panel-light"></div>
+<div class="door-wrapper locked" id="door-container" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <div class="door-frame">
+        <div class="door-top-console">
+            <div class="door-top-label">LIBERAÇÃO</div>
+            <div class="door-top-lights">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <div class="door-side left">
+            <div class="module-lights">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <div class="door-side right">
+            <div class="module-lights">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <div class="door-core" id="door-core">
+            <div class="door-sector-label left">SETOR</div>
+            <div class="door-sector-label right">13</div>
+            <div class="door-corridor">
+                <div class="corridor-wall corridor-wall-left"></div>
+                <div class="corridor-wall corridor-wall-right"></div>
+                <div class="corridor-haze"></div>
+                <div class="corridor-light-beam corridor-light-top"></div>
+                <div class="corridor-light-beam corridor-light-bottom"></div>
+                <div class="corridor-horizon"></div>
+            </div>
+            <div class="door-leaf door-leaf-left">
+                <div class="door-leaf-overlay"></div>
+            </div>
+            <div class="door-leaf door-leaf-right">
+                <div class="door-leaf-overlay"></div>
+            </div>
+            <div class="door-center-groove"></div>
+            <div class="door-bottom-stripes"></div>
+            <div class="door-chevrons">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
     </div>
-    <div class="door-dot dot1"></div>
-    <div class="door-dot dot2"></div>
-    <div class="door-dot dot3"></div>
-    <div class="door-dot dot4"></div>
-    <div class="door-section-label">SECTION<br>B4</div>
+    
+    <div class="qr-reader">
+        <div class="qr-reader-screen">
+            <div class="qr-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="qr-reader-label">QR Scanner</div>
+        <div class="qr-reader-indicator"></div>
+    </div>
 </div>
 
 <script>
-// Door component functionality
 class DoorComponent {
     constructor() {
-        this.element = document.getElementById('door');
+        this.container = document.getElementById('door-container');
+        if (!this.container) return;
+
+        this.isOpen = false;
+        this.isLocked = true;
+        this.autoCloseTimeout = null;
     }
-    
-    // Show success door opening effect
+
+    openDoor() {
+        if (!this.container || this.isOpen) return;
+        this.container.classList.add('open');
+        this.isOpen = true;
+        this._scheduleAutoClose();
+    }
+
+    closeDoor() {
+        if (!this.container || !this.isOpen) return;
+        this.container.classList.remove('open');
+        this.isOpen = false;
+        if (this.autoCloseTimeout) {
+            clearTimeout(this.autoCloseTimeout);
+            this.autoCloseTimeout = null;
+        }
+    }
+
+    lockDoor() {
+        if (!this.container) return;
+        this.container.classList.add('locked');
+        this.container.classList.remove('unlocked');
+        this.isLocked = true;
+    }
+
+    unlockDoor() {
+        if (!this.container) return;
+        this.container.classList.remove('locked');
+        this.container.classList.add('unlocked');
+        this.isLocked = false;
+    }
+
     showSuccessEffect() {
-        if (!this.element) return;
-        
-        this.element.classList.add('open');
-        
+        if (!this.container) return;
+
+        this.removeAlarmEffect();
+        this.container.classList.add('success');
+        this.unlockDoor();
+        this.openDoor();
+
         setTimeout(() => {
-            this.element.classList.remove('open');
-        }, 2500);
+            if (!this.container) return;
+            this.container.classList.remove('success');
+        }, 1200);
     }
-    
-    // Show alarm effect (red flashing)
+
+    showErrorEffect() {
+        if (!this.container) return;
+
+        this.closeDoor();
+        this.lockDoor();
+        this._restartAnimation('error');
+
+        setTimeout(() => {
+            if (!this.container) return;
+            this.container.classList.remove('error');
+        }, 600);
+    }
+
     showAlarmEffect() {
-        if (this.element) {
-            this.element.classList.add('alarm');
-        }
+        if (!this.container) return;
+        this.lockDoor();
+        this.container.classList.add('alarm');
     }
-    
-    // Remove alarm effect
+
     removeAlarmEffect() {
-        if (this.element) {
-            this.element.classList.remove('alarm');
+        if (!this.container) return;
+        this.container.classList.remove('alarm', 'error');
+    }
+
+    resetDoor() {
+        if (!this.container) return;
+        this.removeAlarmEffect();
+        this.closeDoor();
+        this.lockDoor();
+    }
+
+    _scheduleAutoClose() {
+        if (this.autoCloseTimeout) {
+            clearTimeout(this.autoCloseTimeout);
         }
+        this.autoCloseTimeout = setTimeout(() => this.closeDoor(), 3200);
+    }
+
+    _restartAnimation(cls) {
+        this.container.classList.remove(cls);
+        // Force reflow to restart animation
+        void this.container.offsetWidth;
+        this.container.classList.add(cls);
     }
 }
 
-// Drag and drop functions for door
-function allowDrop(ev) { 
-    ev.preventDefault(); 
+function allowDrop(ev) {
+    ev.preventDefault();
 }
 
 function drop(ev) {
     ev.preventDefault();
-    
-    // Call the main game logic for processing the drop
     if (window.gameController) {
         window.gameController.processDropAttempt();
     }
 }
 
-// Create global door component instance
 window.doorComponent = new DoorComponent();
 </script>

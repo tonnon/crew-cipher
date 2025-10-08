@@ -62,7 +62,12 @@ class GameController {
     startTimer() {
         this.timeLeft = 30;
         this.timerActive = true;
-        window.timerComponent.show();
+        
+        // Force show timer
+        if (window.timerComponent) {
+            window.timerComponent.show();
+            window.timerComponent.updateTime(this.timeLeft);
+        }
         
         // Initialize progress bar
         window.timerComponent.startProgress();
