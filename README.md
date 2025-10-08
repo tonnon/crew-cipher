@@ -29,7 +29,7 @@ CrewCipher é um jogo/simulação educacional onde:
 - **Criptografia**: `cryptography` (Fernet + PBKDF2HMAC)
 - **QR Codes**: `qrcode` + PIL
 - **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
-- **Deployment**: Render (configurado via `render.yaml`)
+- **Deployment**: Vercel
 
 ## 📦 Instalação e Execução
 
@@ -96,18 +96,17 @@ crew-cipher/
 
 ## 🚀 Deploy
 
-O projeto está configurado para deploy no Render:
+O projeto está configurado para deploy no Vercel:
 
 1. Faça push para o repositório Git
-2. Conecte o repositório no Render
-3. Configure as variáveis de ambiente no painel do Render
-4. O deploy será automático usando `render.yaml`
+2. Conecte o repositório no Vercel
+3. Configure as variáveis de ambiente no painel do Vercel
 
 ## 🎯 Funcionalidades
 
 - ✨ **Geração Algorítmica de Nomes**: Nomes únicos criados por padrões silábicos
 - 🔄 **Embaralhamento Completo**: Papéis e posições randomizados a cada rodada
-- 🎲 **Sistema de Rodadas**: Botão "Reiniciar" para nova tripulação
+- 🎲 **Sistema de Rodadas**: Botão "Tentar novamente" para nova rodada
 - 📱 **QR Codes Dinâmicos**: Gerados em tempo real para cada tripulante
 - 🖱️ **Interface Drag & Drop**: Arraste crachás para testar acesso
 - 🔒 **Criptografia Real**: Fernet (AES-128) com PBKDF2HMAC
@@ -127,12 +126,7 @@ O projeto está configurado para deploy no Render:
 3. Clique em um tripulante para ver seu QR code
 4. Arraste o crachá até a porta
 5. Veja se o acesso é autorizado ou negado
-6. Clique em "Reiniciar Rodada" para nova tripulação
 
 ## 📄 Licença
 
 Este projeto é apenas um exemplo didático para demonstração de conceitos de criptografia, autenticação e desenvolvimento web.
-
----
-
-**Desenvolvido com Flask, Cryptography e ❤️**
